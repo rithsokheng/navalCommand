@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -62,6 +63,7 @@ public class HostLobbyView {
         StackPane qrFrame = new StackPane(qrView);
         qrFrame.setPadding(new Insets(14));
         qrFrame.getStyleClass().add("qr-frame");
+        qrFrame.setMaxWidth(Region.USE_PREF_SIZE);
 
         Label howTo = new Label("Have your friend open Battleship, tap JOIN A GAME, then scan\n" +
                 "this code with their phone camera to read the text below — or\n" +
@@ -90,6 +92,7 @@ public class HostLobbyView {
 
         VBox layout = new VBox(14, title, qrFrame, details, howTo, status, cancel);
         layout.setAlignment(Pos.CENTER);
+        layout.setFillWidth(false);
         layout.setPadding(new Insets(24));
 
         StackPane root = new StackPane(layout);
