@@ -64,10 +64,21 @@ public abstract class AbstractShipPlaceView {
 
     // ================= Template method =================
 
+    private static double computePlacementCellSize(int size) {
+        if (size <= 5) return 84;
+        if (size <= 8) return 52;
+        return 42;
+    }
+
+    protected BoardGridPane createBoardGrid() {
+        int boardSize = controller.getSelectedTheater().getBoardSize();
+        return new BoardGridPane(boardSize, computePlacementCellSize(boardSize));
+    }
+
     /** Assembles the shared placement skeleton. Subclasses customize via hooks only. */
     public final StackPane build() {
         dockPane = createDock();
-        boardGridPane = new BoardGridPane(controller.getSelectedTheater().getBoardSize());
+        boardGridPane = createBoardGrid();
         setupDragTargets();
 
         orientationLabel = new Label();
@@ -177,13 +188,38 @@ public abstract class AbstractShipPlaceView {
 
                 cell.setOnDragExited(event -> clearGhost());
 
+                cell.setOnMouseEntered(event -> {
+                    ShipType selected = dockPane.getSelectedShip();
+                    if (selected != null) {
+                        showGhost(row, col, selected);
+                    }
+                });
+
+                cell.setOnMouseExited(event -> {
+                    if (dockPane.getSelectedShip() != null) {
+                        clearGhost();
+                    }
+                });
+
                 cell.setOnMouseClicked(event -> {
                     if (event.getButton() != MouseButton.PRIMARY) return;
                     Coordinate clicked = new Coordinate(row, col);
-                    boolean removed = controller.removeShipAt(player, clicked);
-                    if (removed) {
-                        audio.playRemoveShip();
-                        refreshAll();
+                    ShipType selected = dockPane.getSelectedShip();
+                    if (selected != null) {
+                        clearGhost();
+                        boolean placed = controller.placeShip(player, selected, clicked, orientation);
+                        if (placed) {
+                            audio.playPlaceShip();
+                            refreshAll();
+                        } else {
+                            shakeCell(cell);
+                        }
+                    } else {
+                        boolean removed = controller.removeShipAt(player, clicked);
+                        if (removed) {
+                            audio.playRemoveShip();
+                            refreshAll();
+                        }
                     }
                 });
 
