@@ -30,27 +30,40 @@ final class MenuOverlays {
         title.setFont(Font.font("Arial Black", FontWeight.BOLD, 22));
         title.getStyleClass().add("overlay-title");
 
+        Label subtitle = new Label("FLEET ENGAGEMENT & COMBAT PROTOCOLS");
+        subtitle.getStyleClass().add("overlay-subtitle");
+
+        VBox header = new VBox(4, title, subtitle);
+        header.setAlignment(Pos.CENTER);
+        header.setMaxWidth(Double.MAX_VALUE);
+
         GridPane grid = new GridPane();
-        grid.setHgap(40);
-        grid.setVgap(22);
+        grid.setHgap(16);
+        grid.setVgap(14);
+        grid.setAlignment(Pos.CENTER);
         grid.add(manualBlock("1. SETUP: PLACE YOUR FLEET",
-                "Drag ships from the Dock onto your grid.\nRight-click or press 'R' to rotate."), 0, 0);
+                "Drag warships from Dock onto your grid. Right-click or press 'R' to rotate."), 0, 0);
         grid.add(manualBlock("2. SELECT TARGET GRID",
-                "Switch views between YOUR FLEET\nand ENEMY WATERS."), 1, 0);
+                "Switch tactical views between YOUR FLEET and ENEMY WATERS."), 1, 0);
         grid.add(manualBlock("3. FIRE & SPECIAL AMMO",
-                "Click a cell in Enemy Waters to fire.\nCheck special ammo limits before use."), 0, 1);
+                "Click a cell in Enemy Waters to fire. Deploy Special Ordnance when available."), 0, 1);
         grid.add(manualBlock("4. TURN & VICTORY",
-                "Turns alternate between admirals.\nDestroy all enemy ships to win."), 1, 1);
+                "Turns alternate between admirals. Destroy all enemy warships to claim victory."), 1, 1);
+
+        Label tip = new Label("TACTICAL TIP: Switch to Enemy Waters after placing your fleet to begin offensive strikes!");
+        tip.getStyleClass().add("manual-tip-banner");
+        tip.setMaxWidth(Double.MAX_VALUE);
+        tip.setAlignment(Pos.CENTER);
 
         Button close = new Button("CLOSE");
-        close.getStyleClass().add("primary-button");
+        close.getStyleClass().addAll("primary-button", "featured-button");
         close.setPrefWidth(160);
         close.setPrefHeight(42);
         close.setOnAction(e -> { audio.playClick(); onClose.run(); });
 
-        VBox content = new VBox(22, title, divider(), grid, close);
+        VBox content = new VBox(16, header, divider(), grid, tip, divider(), close);
         content.setAlignment(Pos.CENTER);
-        VBox.setMargin(close, new Insets(6, 0, 0, 0));
+        VBox.setMargin(close, new Insets(4, 0, 0, 0));
 
         VBox card = wrapCard(content, 620);
         return backdrop(card);
@@ -58,12 +71,17 @@ final class MenuOverlays {
 
     private static VBox manualBlock(String heading, String body) {
         Label h = new Label(heading);
-        h.getStyleClass().add("overlay-block-title");
+        h.getStyleClass().add("manual-block-title");
+        h.setAlignment(Pos.CENTER_LEFT);
         Label b = new Label(body);
-        b.getStyleClass().add("info-text");
+        b.getStyleClass().add("manual-block-body");
+        b.setAlignment(Pos.CENTER_LEFT);
         b.setWrapText(true);
-        VBox box = new VBox(8, h, b);
-        box.setMaxWidth(240);
+        VBox box = new VBox(6, h, b);
+        box.getStyleClass().add("manual-block");
+        box.setAlignment(Pos.TOP_LEFT);
+        box.setPrefWidth(265);
+        box.setMaxWidth(265);
         return box;
     }
 
@@ -76,11 +94,18 @@ final class MenuOverlays {
         title.setFont(Font.font("Arial Black", FontWeight.BOLD, 22));
         title.getStyleClass().add("overlay-title");
 
+        Label subtitle = new Label("SYSTEM AUDIO, DISPLAY & COMMAND MAPPINGS");
+        subtitle.getStyleClass().add("overlay-subtitle");
+
+        VBox header = new VBox(4, title, subtitle);
+        header.setAlignment(Pos.CENTER);
+        header.setMaxWidth(Double.MAX_VALUE);
+
         // --- Audio & Communications ---
         Label audioHeading = sectionHeading("1. AUDIO & COMMUNICATIONS");
         Slider master = themedSlider(audio.getMasterVolume() * 100);
         Slider sfx = themedSlider(audio.getSfxVolume() * 100);
-        ToggleButton muteAll = new ToggleButton("MUTE ALL");
+        ToggleButton muteAll = new ToggleButton(audio.isMuted() ? "MUTED" : "MUTE ALL");
         muteAll.getStyleClass().add("switch-toggle");
         muteAll.setSelected(audio.isMuted());
 
@@ -88,8 +113,11 @@ final class MenuOverlays {
                 audio.setMasterVolume(val.doubleValue() / 100));
         sfx.valueProperty().addListener((obs, old, val) ->
                 audio.setSfxVolume(val.doubleValue() / 100));
-        muteAll.setOnAction(e ->
-                audio.setMuted(muteAll.isSelected()));
+        muteAll.setOnAction(e -> {
+            boolean m = muteAll.isSelected();
+            audio.setMuted(m);
+            muteAll.setText(m ? "MUTED" : "MUTE ALL");
+        });
 
         GridPane audioGrid = new GridPane();
         audioGrid.setHgap(16);
@@ -109,26 +137,32 @@ final class MenuOverlays {
 
         // --- Graphics & Interface ---
         Label gfxHeading = sectionHeading("2. GRAPHICS & INTERFACE");
-        HBox resRow = new HBox(10, rowLabel("\uD83D\uDDA5  RESOLUTION"),
-                segmentedGroup("1080p", "1440p"));
-        HBox scaleRow = new HBox(10, rowLabel("\uD83C\uDFA8  UI SCALE"),
-                segmentedGroup("Small", "Medium", "Large"));
-        HBox animRow = new HBox(10, rowLabel("\u2728  ANIMATIONS"),
-                segmentedGroup("On", "Off"));
-        VBox gfxBox = new VBox(10, resRow, scaleRow, animRow);
+        ToggleGroup resGroup = new ToggleGroup();
+        ToggleGroup scaleGroup = new ToggleGroup();
+        ToggleGroup animGroup = new ToggleGroup();
+
+        GridPane gfxGrid = new GridPane();
+        gfxGrid.setHgap(16);
+        gfxGrid.setVgap(10);
+        gfxGrid.add(rowLabel("\uD83D\uDDA5  RESOLUTION"), 0, 0);
+        gfxGrid.add(segmentedGroupWithToggle(resGroup, "1160x740", "1360x820", "Fullscreen"), 1, 0);
+        gfxGrid.add(rowLabel("\uD83C\uDFA8  UI SCALE"), 0, 1);
+        gfxGrid.add(segmentedGroupWithToggle(scaleGroup, "Standard", "Large"), 1, 1);
+        gfxGrid.add(rowLabel("\u2728  ANIMATIONS"), 0, 2);
+        gfxGrid.add(segmentedGroupWithToggle(animGroup, "On", "Off"), 1, 2);
 
         // --- Controls & Shortcuts ---
         Label ctrlHeading = sectionHeading("3. CONTROLS & SHORTCUTS");
-        HBox ctrlRow = new HBox(28,
-                keybindPair("\u2328  FIRE (CLICK)", "."),
-                keybindPair("\uD83D\uDDB1  ROTATE (R-CLICK / R)", "R"),
-                keybindPair("\u21C6  SWITCH VIEW (TAB)", "TAB"));
+        HBox ctrlRow = new HBox(24,
+                keybindPair("\u2328  FIRE", "CLICK"),
+                keybindPair("\uD83D\uDDB1  ROTATE", "R / R-CLICK"),
+                keybindPair("\uD83D\uDEE5  REMOVE SHIP", "CLICK SHIP"));
+        ctrlRow.setAlignment(Pos.CENTER_LEFT);
 
         Button save = new Button("SAVE & APPLY");
         save.getStyleClass().addAll("primary-button", "featured-button");
         save.setPrefWidth(180);
         save.setPrefHeight(42);
-        save.setOnAction(e -> { audio.playClick(); onClose.run(); });
 
         Button close = new Button("CLOSE");
         close.getStyleClass().add("ghost-button");
@@ -137,23 +171,59 @@ final class MenuOverlays {
         close.setOnAction(e -> { audio.playClick(); onClose.run(); });
 
         HBox buttons = new HBox(16, save, close);
+        buttons.setMaxWidth(Double.MAX_VALUE);
         buttons.setAlignment(Pos.CENTER);
 
         VBox content = new VBox(16,
-                title, divider(),
+                header, divider(),
                 audioHeading, audioRow, divider(),
-                gfxHeading, gfxBox, divider(),
+                gfxHeading, gfxGrid, divider(),
                 ctrlHeading, ctrlRow,
                 buttons);
         content.setAlignment(Pos.CENTER_LEFT);
         content.setFillWidth(true);
-        VBox.setMargin(buttons, new Insets(8, 0, 0, 0));
+        VBox.setMargin(buttons, new Insets(12, 0, 0, 0));
         buttons.setAlignment(Pos.CENTER);
-        title.setAlignment(Pos.CENTER);
-        VBox.setMargin(title, new Insets(0, 0, 0, 0));
 
         VBox card = wrapCard(content, 620);
+
+        save.setOnAction(e -> {
+            audio.playClick();
+            if (card.getScene() != null && card.getScene().getWindow() instanceof javafx.stage.Stage stage) {
+                if (resGroup.getSelectedToggle() != null) {
+                    String chosenRes = (String) resGroup.getSelectedToggle().getUserData();
+                    if ("1360x820".equals(chosenRes)) {
+                        stage.setFullScreen(false);
+                        stage.setWidth(1360);
+                        stage.setHeight(820);
+                        stage.centerOnScreen();
+                    } else if ("Fullscreen".equals(chosenRes)) {
+                        stage.setFullScreen(true);
+                    } else {
+                        stage.setFullScreen(false);
+                        stage.setWidth(1160);
+                        stage.setHeight(740);
+                        stage.centerOnScreen();
+                    }
+                }
+            }
+            onClose.run();
+        });
+
         return backdrop(card);
+    }
+
+    private static HBox segmentedGroupWithToggle(ToggleGroup group, String... options) {
+        HBox box = new HBox(6);
+        for (int i = 0; i < options.length; i++) {
+            ToggleButton tb = new ToggleButton(options[i]);
+            tb.getStyleClass().add("segmented-toggle");
+            tb.setToggleGroup(group);
+            tb.setUserData(options[i]);
+            if (i == 0) tb.setSelected(true);
+            box.getChildren().add(tb);
+        }
+        return box;
     }
 
     private static Label sectionHeading(String text) {
@@ -165,7 +235,8 @@ final class MenuOverlays {
     private static Label rowLabel(String text) {
         Label l = new Label(text);
         l.getStyleClass().add("info-text");
-        l.setPrefWidth(150);
+        l.setPrefWidth(160);
+        l.setMinWidth(160);
         return l;
     }
 
@@ -197,7 +268,8 @@ final class MenuOverlays {
         l.getStyleClass().add("dim-text");
         Label k = new Label(key);
         k.getStyleClass().add("keybind-box");
-        k.setPrefWidth(70);
+        k.setMinWidth(72);
+        k.setAlignment(Pos.CENTER);
         VBox box = new VBox(6, l, k);
         box.setAlignment(Pos.CENTER_LEFT);
         return box;
@@ -218,7 +290,9 @@ final class MenuOverlays {
         VBox card = new VBox(content);
         card.getStyleClass().add("overlay-card");
         card.setMaxWidth(width);
-        card.setAlignment(Pos.TOP_CENTER);
+        card.setPrefWidth(width);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
+        card.setAlignment(Pos.CENTER);
         return card;
     }
 
