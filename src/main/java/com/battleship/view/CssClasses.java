@@ -32,6 +32,7 @@ public final class CssClasses {
     public static final String BOARD_CARD       = "board-card";
     public static final String BOARD_CARD_TITLE = "board-card-title";
     public static final String SIDE_CARD        = "side-card";
+    public static final String WEAPON_CONSOLE_CARD = "weapon-console-card";
     public static final String SIDE_CARD_TITLE  = "side-card-title";
 }
 
