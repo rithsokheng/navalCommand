@@ -22,6 +22,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
@@ -138,45 +139,109 @@ public class NetworkBattleView extends AbstractBattleView {
         logLabel.getStyleClass().addAll("info-text", "battle-log");
 
         orientationLabel = new Label();
-        orientationLabel.getStyleClass().add("dim-text");
+        orientationLabel.getStyleClass().add("orientation-hint");
         updateOrientationLabel();
 
-        Label ownLabel = new Label("YOUR FLEET");
-        ownLabel.getStyleClass().add("accent-text");
-        Label enemyLabel = new Label("ENEMY WATERS");
-        enemyLabel.getStyleClass().add("accent-text");
-
-        VBox ownBox = new VBox(6, ownLabel, ownGrid);
-        ownBox.setAlignment(Pos.CENTER);
-        VBox enemyBox = new VBox(6, enemyLabel, enemyGrid);
-        enemyBox.setAlignment(Pos.CENTER);
+        VBox ownBox = buildBoardCard("YOUR FLEET", ownGrid);
+        VBox enemyBox = buildBoardCard("ENEMY WATERS", enemyGrid);
 
         fleetStatusLabel = new Label();
         fleetStatusLabel.getStyleClass().add("fleet-status-label");
         refreshFleetStatus();
 
-        HBox boards = new HBox(30, ownBox, enemyBox);
+        HBox boards = new HBox(28, ownBox, enemyBox);
         boards.setAlignment(Pos.CENTER);
+        boards.setMaxWidth(Region.USE_PREF_SIZE);
+
+        VBox weaponsBox = new VBox(9, launcherBar, orientationLabel);
+        weaponsBox.setAlignment(Pos.CENTER);
+        weaponsBox.getStyleClass().add(CssClasses.WEAPON_CONSOLE_CARD);
+        weaponsBox.setPadding(new Insets(10, 16, 10, 16));
+        weaponsBox.setMaxWidth(Region.USE_PREF_SIZE);
+
+        VBox statusBox = new VBox(6, logLabel, fleetStatusLabel);
+        statusBox.setAlignment(Pos.CENTER);
+        statusBox.getStyleClass().add("status-panel");
+        statusBox.setPadding(new Insets(10, 18, 10, 18));
+        statusBox.setMaxWidth(Region.USE_PREF_SIZE);
 
         HBox topBar = new HBox(turnLabel);
         topBar.setAlignment(Pos.CENTER);
         javafx.scene.control.Button exit = buildExitButton();
         StackPane titleRow = new StackPane(topBar, exit);
         StackPane.setAlignment(exit, Pos.CENTER_RIGHT);
+        titleRow.setMaxWidth(Region.USE_PREF_SIZE);
 
-        VBox layout = new VBox(12, titleRow, launcherBar, orientationLabel, boards, logLabel, fleetStatusLabel);
-        layout.setAlignment(Pos.CENTER);
-        layout.setPadding(new Insets(24));
+        boards.widthProperty().addListener((obs, oldW, newW) -> {
+            if (newW.doubleValue() > 0) {
+                titleRow.setPrefWidth(newW.doubleValue());
+                titleRow.setMaxWidth(newW.doubleValue());
+            }
+        });
+
+        VBox layout = new VBox(12, titleRow, weaponsBox, boards, statusBox);
+        layout.setAlignment(Pos.TOP_CENTER);
+        layout.setFillWidth(false);
+        layout.setPadding(new Insets(12, 20, 16, 20));
         return layout;
+    }
+
+    private VBox buildBoardCard(String title, BoardGridPane grid) {
+        Label titleLbl = new Label(title);
+        titleLbl.getStyleClass().add("board-card-title");
+        VBox card = new VBox(12, titleLbl, grid);
+        card.getStyleClass().add("board-card");
+        card.setAlignment(Pos.CENTER);
+        card.setPadding(new Insets(16));
+        card.setMaxHeight(Region.USE_PREF_SIZE);
+        return card;
     }
 
     @Override
     protected StackPane decorateRoot(Pane layout) {
-        return new StackPane(layout); // network screen has no ocean backdrop
+        StackPane root = new StackPane();
+        javafx.scene.canvas.Canvas ocean = DecorUtil.animatedOceanScene(root, 0.0);
+        root.getChildren().add(ocean);
+        root.getChildren().add(layout);
+
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.widthProperty().addListener((o, oldW, newW) -> adjustGridSizes(newW.doubleValue(), newScene.getHeight()));
+                newScene.heightProperty().addListener((o, oldH, newH) -> adjustGridSizes(newScene.getWidth(), newH.doubleValue()));
+                adjustGridSizes(newScene.getWidth(), newScene.getHeight());
+            }
+        });
+
+        return root;
+    }
+
+    private void adjustGridSizes(double width, double height) {
+        if (width <= 0 || height <= 0 || ownGrid == null || enemyGrid == null) return;
+        int size = ownGrid.getSize();
+
+        // Vertical budget: window minus title (~55), weaponsBox (~65), statusBox (~65),
+        // card chrome (title ~30, padding ~32, spacing ~12), VBox gaps (10*3),
+        // layout padding (28) ≈ 320px total overhead.
+        double availH = height - 320;
+        // Horizontal budget per board: window minus padding (40), gap (28),
+        // card padding (32 each = 64) ≈ 132px total overhead.
+        double availW = (width - 132) / 2.0;
+
+        double maxGridPx = Math.min(availW, availH);
+        maxGridPx = Math.max(260.0, Math.min(maxGridPx, 760.0));
+
+        double newCellPx = Math.floor(maxGridPx / size);
+        // Allow cells to grow up to 120px so 5x5 boards on fullscreen are prominent and fill space
+        newCellPx = Math.min(newCellPx, 120.0);
+        ownGrid.setCellSize(newCellPx);
+        enemyGrid.setCellSize(newCellPx);
     }
 
     @Override
     protected void onViewShown() {
+        if (nav.getStage() != null && nav.getStage().getScene() != null) {
+            adjustGridSizes(nav.getStage().getScene().getWidth(), nav.getStage().getScene().getHeight());
+        }
         netSession.getSession().setOnMessage(this::handleMessage);
         netSession.getSession().setOnDisconnected(this::handleDisconnect);
         enemyGrid.setDisable(!netSession.isMyTurn());
@@ -193,7 +258,10 @@ public class NetworkBattleView extends AbstractBattleView {
         }
     }
 
+    private boolean gameOver = false;
+
     private void handleDisconnect() {
+        if (gameOver) return;
         AlertUtil.showWarning(nav.window(), "Disconnected", "Your opponent disconnected.");
         nav.showMainMenu();
     }
@@ -284,6 +352,11 @@ public class NetworkBattleView extends AbstractBattleView {
     }
 
     private void goToGameOver(boolean won) {
+        gameOver = true;
+        if (netSession.getSession() != null) {
+            netSession.getSession().setOnDisconnected(null);
+            netSession.getSession().setOnMessage(null);
+        }
         nav.showNetworkGameOver(netSession, won);
     }
 
@@ -306,6 +379,7 @@ public class NetworkBattleView extends AbstractBattleView {
         }
 
         netSession.getSession().send(new NetMessage.Fire(order.weapon().id(), order.anchor(), order.orientation()));
+        audio.playFire();
 
         netSession.beginOpponentTurn();
         turnLabel.setText("AWAITING RESPONSE\u2026");
