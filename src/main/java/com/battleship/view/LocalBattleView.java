@@ -168,7 +168,7 @@ public class LocalBattleView extends AbstractBattleView {
     @Override
     protected Pane assembleLayout() {
         orientationLabel = new Label();
-        orientationLabel.getStyleClass().add("dim-text");
+        orientationLabel.getStyleClass().add("orientation-hint");
         updateOrientationLabel();
 
         VBox leftColumn = buildLeftColumn();
@@ -176,25 +176,40 @@ public class LocalBattleView extends AbstractBattleView {
         refreshShipStatusBar();
         addLogEntry("Select a weapon, then a target on the enemy grid.", "info");
 
-        HBox content = new HBox(24, leftColumn, sidePanel);
-        content.setAlignment(Pos.TOP_CENTER);
+        HBox content = new HBox(20, leftColumn, sidePanel);
+        content.setAlignment(Pos.CENTER);
+        content.setMaxWidth(Region.USE_PREF_SIZE);
 
         HBox commandBar = buildCommandBar(perspectiveName(), opponentName());
-        VBox layout = new VBox(16, commandBar, content);
+        commandBar.setMaxWidth(Region.USE_PREF_SIZE);
+        content.widthProperty().addListener((obs, oldW, newW) -> {
+            if (newW.doubleValue() > 0) {
+                commandBar.setPrefWidth(newW.doubleValue());
+                commandBar.setMaxWidth(newW.doubleValue());
+            }
+        });
+
+        VBox layout = new VBox(12, commandBar, content);
         layout.setAlignment(Pos.TOP_CENTER);
-        layout.setPadding(new Insets(20));
+        layout.setFillWidth(false);
+        layout.setPadding(new Insets(12, 20, 16, 20));
         return layout;
     }
 
     /** Weapon bar stacked above the two board cards. */
     private VBox buildLeftColumn() {
-        VBox weaponsCard = new VBox(8, launcherBar, orientationLabel);
+        VBox weaponsCard = new VBox(9, launcherBar, orientationLabel);
         weaponsCard.setAlignment(Pos.CENTER);
-        weaponsCard.getStyleClass().add("side-card");
+        weaponsCard.getStyleClass().add(CssClasses.WEAPON_CONSOLE_CARD);
+        weaponsCard.setMaxWidth(Region.USE_PREF_SIZE);
 
-        VBox leftColumn = new VBox(16, weaponsCard, buildBoardsRow());
-        leftColumn.setAlignment(Pos.TOP_CENTER);
-        HBox.setHgrow(leftColumn, Priority.ALWAYS);
+        HBox boardsRow = buildBoardsRow();
+        boardsRow.setMaxWidth(Region.USE_PREF_SIZE);
+
+        VBox leftColumn = new VBox(10, weaponsCard, boardsRow);
+        leftColumn.setAlignment(Pos.CENTER);
+        leftColumn.setFillWidth(false);
+        leftColumn.setMaxWidth(Region.USE_PREF_SIZE);
         return leftColumn;
     }
 
@@ -210,7 +225,7 @@ public class LocalBattleView extends AbstractBattleView {
         refreshShipsLeftLabels();
 
         HBox boardsRow = new HBox(24, ownBox, enemyBox);
-        boardsRow.setAlignment(Pos.TOP_CENTER);
+        boardsRow.setAlignment(Pos.CENTER);
         return boardsRow;
     }
 
@@ -220,11 +235,45 @@ public class LocalBattleView extends AbstractBattleView {
         Canvas ocean = DecorUtil.animatedOceanScene(root, 0.0);
         root.getChildren().add(ocean);
         root.getChildren().add(layout);
+
+        root.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                newScene.widthProperty().addListener((o, oldW, newW) -> adjustGridSizes(newW.doubleValue(), newScene.getHeight()));
+                newScene.heightProperty().addListener((o, oldH, newH) -> adjustGridSizes(newScene.getWidth(), newH.doubleValue()));
+                adjustGridSizes(newScene.getWidth(), newScene.getHeight());
+            }
+        });
+
         return root;
+    }
+
+    private void adjustGridSizes(double width, double height) {
+        if (width <= 0 || height <= 0 || ownGrid == null || enemyGrid == null) return;
+        int size = ownGrid.getSize();
+
+        // Vertical budget: window minus command bar (~55), weapons card (~65),
+        // card chrome (title ~30, padding ~36, spacing ~14), VBox gaps (12+12),
+        // layout padding (32) ≈ 250px total overhead.
+        double availH = height - 250;
+        // Horizontal budget per board: window minus sidePanel (240), HBox gaps (20+24),
+        // layout padding (40), card padding (36 each = 72) ≈ 420px total overhead.
+        double availW = (width - 420) / 2.0;
+
+        double maxGridPx = Math.min(availW, availH);
+        maxGridPx = Math.max(260.0, Math.min(maxGridPx, 760.0));
+
+        double newCellPx = Math.floor(maxGridPx / size);
+        // Allow cells to grow up to 120px so 5x5 boards on fullscreen are prominent and fill space
+        newCellPx = Math.min(newCellPx, 120.0);
+        ownGrid.setCellSize(newCellPx);
+        enemyGrid.setCellSize(newCellPx);
     }
 
     @Override
     protected void onViewShown() {
+        if (nav.getStage() != null && nav.getStage().getScene() != null) {
+            adjustGridSizes(nav.getStage().getScene().getWidth(), nav.getStage().getScene().getHeight());
+        }
         if (controller.isAiTurn()) {
             updateTurnBadge("ENEMY TURN", "turn-badge-enemy");
             enemyGrid.setDisable(true);
@@ -245,6 +294,7 @@ public class LocalBattleView extends AbstractBattleView {
         refreshLauncherBar();
 
         if (controller.getState() == GameState.GAME_OVER) {
+            NuclearResupplyDialog.dismissActive();
             audio.stopBgm();
             nav.showGameOver(attacker);
             return;
@@ -274,6 +324,7 @@ public class LocalBattleView extends AbstractBattleView {
             applyResult(ownGrid, result);
 
             if (controller.getState() == GameState.GAME_OVER) {
+                NuclearResupplyDialog.dismissActive();
                 audio.stopBgm();
                 nav.showGameOver(attacker);
                 return;
@@ -377,6 +428,7 @@ public class LocalBattleView extends AbstractBattleView {
         VBox card = new VBox(14, titleRow, grid);
         card.getStyleClass().add("board-card");
         card.setAlignment(Pos.CENTER);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
         return card;
     }
 
@@ -395,16 +447,17 @@ public class LocalBattleView extends AbstractBattleView {
     // ---------- Side console (fleet status + attack log) ----------
 
     private VBox buildSidePanel() {
-        VBox side = new VBox(16, buildRadarCard(), buildFleetStatusCard(), buildAttackLogCard());
-        side.setPrefWidth(260);
-        side.setMinWidth(260);
-        side.setMaxWidth(260);
+        VBox side = new VBox(12, buildRadarCard(), buildFleetStatusCard(), buildAttackLogCard());
+        side.setPrefWidth(240);
+        side.setMinWidth(240);
+        side.setMaxWidth(240);
+        side.setAlignment(Pos.CENTER);
         return side;
     }
 
     /** Decorative radar sweep. */
     private VBox buildRadarCard() {
-        StackPane radar = DecorUtil.animatedRadarSweep(150);
+        StackPane radar = DecorUtil.animatedRadarSweep(130);
         VBox radarCard = new VBox(radar);
         radarCard.setAlignment(Pos.CENTER);
         radarCard.getStyleClass().add("side-card");
@@ -446,9 +499,9 @@ public class LocalBattleView extends AbstractBattleView {
 
         Label name = new Label(type.name().replace('_', ' '));
         name.getStyleClass().add(allSunk ? "fleet-status-name-sunk" : "fleet-status-name");
-        name.setPrefWidth(92);
+        name.setPrefWidth(84);
 
-        double trackWidth = 70;
+        double trackWidth = 58;
         Region track = new Region();
         track.getStyleClass().add("fleet-bar-track");
         track.setPrefSize(trackWidth, 5);
@@ -466,9 +519,9 @@ public class LocalBattleView extends AbstractBattleView {
 
         Label countLabel = new Label(sunkCount + "/" + totalCount + " SUNK");
         countLabel.getStyleClass().add("dim-text");
-        countLabel.setPrefWidth(60);
+        countLabel.setPrefWidth(54);
 
-        HBox row = new HBox(8, name, barStack, countLabel);
+        HBox row = new HBox(6, name, barStack, countLabel);
         row.getStyleClass().add("fleet-status-row");
         row.setAlignment(Pos.CENTER_LEFT);
         return row;
