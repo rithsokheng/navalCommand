@@ -122,8 +122,8 @@ public abstract class AbstractBattleView {
     /** Default orientation label text shared across battle views. */
     protected final String orientationLabelText() {
         Orientation o = firingPlayer().weaponOrientation();
-        return "Orientation: " + (o.isHorizontal() ? "HORIZONTAL" : "VERTICAL")
-                + "  (R or Right-Click to rotate \u2014 affects Salvo / Nuclear)";
+        String mode = o.isHorizontal() ? "\u2194 HORIZONTAL" : "\u2195 VERTICAL";
+        return "ORIENTATION: " + mode + "   \u2022   [R / Right-Click] to Rotate   \u2022   Affects Salvo / Nuclear";
     }
 
     /** Shared shot outcome audio playback. */
@@ -230,6 +230,7 @@ public abstract class AbstractBattleView {
 
     private void confirmExit() {
         if (AlertUtil.showConfirmation(nav.window(), "Exit Game", exitPrompt())) {
+            com.battleship.view.quiz.NuclearResupplyDialog.dismissActive();
             onExitConfirmed();
             audio.stopBgm();
             audio.playMenuMusic();
