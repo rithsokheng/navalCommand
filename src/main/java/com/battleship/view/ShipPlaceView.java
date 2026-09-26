@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -105,17 +106,24 @@ public class ShipPlaceView extends AbstractShipPlaceView {
 
         VBox titleBlock = new VBox(6, title, subtitle);
         titleBlock.setAlignment(Pos.CENTER);
-        StackPane titleRow = new StackPane(titleBlock, exit);
-        StackPane.setAlignment(exit, Pos.CENTER_RIGHT);
-        titleRow.setMaxWidth(Double.MAX_VALUE);
-
         HBox center = new HBox(26, dockPane, boardCard, statusPanel);
         center.setAlignment(Pos.CENTER);
+        center.setMaxWidth(Region.USE_PREF_SIZE);
+
+        StackPane titleRow = new StackPane(titleBlock, exit);
+        StackPane.setAlignment(exit, Pos.CENTER_RIGHT);
+        titleRow.setMaxWidth(Region.USE_PREF_SIZE);
+        center.widthProperty().addListener((obs, oldW, newW) -> {
+            if (newW.doubleValue() > 0) {
+                titleRow.setPrefWidth(newW.doubleValue());
+                titleRow.setMaxWidth(newW.doubleValue());
+            }
+        });
 
         VBox layout = new VBox(24, titleRow, center, bottomBar);
         layout.setAlignment(Pos.CENTER);
+        layout.setFillWidth(false);
         layout.setPadding(new Insets(28, 24, 24, 24));
-        layout.setMaxWidth(Double.MAX_VALUE);
         return layout;
     }
 
