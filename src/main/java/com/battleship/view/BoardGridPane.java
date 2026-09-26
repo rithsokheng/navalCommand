@@ -48,19 +48,69 @@ public class BoardGridPane extends GridPane {
             GHOST_VALID, GHOST_INVALID, GHOST_TARGET
     };
 
-    private static final int CELL_PX = 42;
-
     private final int size;
     private final StackPane[][] cells;
-    private final double cellPx;
+    private double cellPx;
+
+    public static double computeCellSize(int size) {
+        if (size <= 5) return 56;
+        if (size <= 8) return 44;
+        return 38;
+    }
 
     public BoardGridPane(int size) {
+        this(size, computeCellSize(size));
+    }
+
+    public BoardGridPane(int size, double cellPx) {
         this.size = size;
         this.cells = new StackPane[size][size];
-        this.cellPx = size > 10 ? CELL_PX : Math.max(28, 420.0 / size);
+        this.cellPx = cellPx;
         setHgap(1);
         setVgap(1);
         build();
+    }
+
+    public double getCellSize() { return cellPx; }
+
+    public void setCellSize(double newCellPx) {
+        if (newCellPx <= 0 || Math.abs(this.cellPx - newCellPx) < 0.5) return;
+        this.cellPx = newCellPx;
+        double span = newCellPx * 0.32;
+        for (int r = 0; r < size; r++) {
+            for (int c = 0; c < size; c++) {
+                StackPane cell = cells[r][c];
+                cell.setPrefSize(newCellPx, newCellPx);
+                cell.setMinSize(newCellPx, newCellPx);
+                cell.setMaxSize(newCellPx, newCellPx);
+                for (javafx.scene.Node node : cell.getChildren()) {
+                    if (node instanceof ImageView iv) {
+                        if (cell.getStyleClass().contains(CELL_SHIP)) {
+                            iv.setFitWidth(newCellPx);
+                            iv.setFitHeight(newCellPx);
+                        } else if (cell.getStyleClass().contains(CELL_MISS)) {
+                            iv.setFitWidth(newCellPx * 0.7);
+                            iv.setFitHeight(newCellPx * 0.7);
+                        } else {
+                            iv.setFitWidth(newCellPx * 0.85);
+                            iv.setFitHeight(newCellPx * 0.85);
+                        }
+                    } else if (node instanceof Line line) {
+                        if (line.getStartX() < 0 && line.getStartY() < 0) {
+                            line.setStartX(-span);
+                            line.setStartY(-span);
+                            line.setEndX(span);
+                            line.setEndY(span);
+                        } else {
+                            line.setStartX(-span);
+                            line.setStartY(span);
+                            line.setEndX(span);
+                            line.setEndY(-span);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void build() {
@@ -69,6 +119,8 @@ public class BoardGridPane extends GridPane {
             for (int c = 0; c < size; c++) {
                 StackPane cell = new StackPane();
                 cell.setPrefSize(cellPx, cellPx);
+                cell.setMinSize(cellPx, cellPx);
+                cell.setMaxSize(cellPx, cellPx);
                 cell.getStyleClass().add(CELL_CLASS);
                 cells[r][c] = cell;
                 add(cell, c, r);
@@ -207,6 +259,7 @@ public class BoardGridPane extends GridPane {
     /** Colours every cell of a sunk hull (not just the triggering hit) and crosses it out. */
     public void renderSunkShip(List<Coordinate> occupiedCells) {
         Image fire = ImageResources.effect("hit-explosion");
+        double span = cellPx * 0.32;
         for (Coordinate c : occupiedCells) {
             StackPane cell = cells[c.getRow()][c.getCol()];
             cell.getChildren().clear();
@@ -218,10 +271,13 @@ public class BoardGridPane extends GridPane {
                 iv.setPreserveRatio(true);
                 cell.getChildren().add(iv);
             }
-            Line diagonal = new Line(-14, -14, 14, 14);
-            diagonal.getStyleClass().add("board-sunk-cross");
-            cell.getChildren().add(diagonal);
-            StackPane.setAlignment(diagonal, Pos.CENTER);
+            Line d1 = new Line(-span, -span, span, span);
+            d1.getStyleClass().add("board-sunk-cross");
+            Line d2 = new Line(-span, span, span, -span);
+            d2.getStyleClass().add("board-sunk-cross");
+            cell.getChildren().addAll(d1, d2);
+            StackPane.setAlignment(d1, Pos.CENTER);
+            StackPane.setAlignment(d2, Pos.CENTER);
         }
     }
 
