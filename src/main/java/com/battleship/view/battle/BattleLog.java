@@ -6,8 +6,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
- * Newest-first attack log — one of the autonomous components a battle screen is
- * composed from (replaces part of the {@code AbstractBattleView} template method).
+ * newest-first attack log — one of the autonomous components a battle screen is
+ * composed from (replaces part of the {@code abstractbattleview} template method).
  */
 public final class BattleLog {
 
@@ -33,7 +33,7 @@ public final class BattleLog {
         VBox.setVgrow(card, Priority.ALWAYS);
     }
 
-    /** The styled card node to drop into a layout. */
+    /** the styled card node to drop into a layout. */
     public VBox node() {
         return card;
     }

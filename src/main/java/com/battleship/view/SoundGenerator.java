@@ -7,8 +7,8 @@ import java.nio.ByteOrder;
 import java.util.Map;
 
 /**
- * Generates simple procedural sound effects as WAV byte arrays at runtime.
- * No external audio files are needed -- every sound is synthesised from
+ * generates simple procedural sound effects as wav byte arrays at runtime.
+ * no external audio files are needed -- every sound is synthesised from
  * basic waveforms (sine, sawtooth, noise) and amplitude envelopes.
  */
 final class SoundGenerator {
@@ -17,7 +17,7 @@ final class SoundGenerator {
 
     private SoundGenerator() { }
 
-    /** Returns a map of filename -> WAV byte[] for every sound the game needs. */
+    /** returns a map of filename -> wav byte[] for every sound the game needs. */
     static Map<String, byte[]> generateAll() {
         return Map.ofEntries(
             Map.entry("click.wav",       click()),
@@ -36,19 +36,19 @@ final class SoundGenerator {
         );
     }
 
-    // ── Individual sound generators ─────────────────────────────────
+    // ── individual sound generators ─────────────────────────────────
 
-    /** Short UI blip -- 80ms sine at 880 Hz with quick decay. */
+    /** short ui blip -- 80ms sine at 880 hz with quick decay. */
     private static byte[] click() {
         return tone(0.08, 880, 0.5, 0.02);
     }
 
-    /** Weapon fire -- 250ms broadband noise burst with fast attack. */
+    /** weapon fire -- 250ms broadband noise burst with fast attack. */
     private static byte[] fire() {
         return noise(0.25, 0.7, 0.01, 0.20);
     }
 
-    /** Impact thud -- 300ms sine sweep 120→60 Hz with rumble. */
+    /** impact thud -- 300ms sine sweep 120→60 hz with rumble. */
     private static byte[] hit() {
         int samples = (int) (SAMPLE_RATE * 0.30);
         double[] data = new double[samples];
@@ -62,12 +62,12 @@ final class SoundGenerator {
         return toWav(data, 0.6);
     }
 
-    /** Water splash -- 350ms filtered noise with high-pass character. */
+    /** water splash -- 350ms filtered noise with high-pass character. */
     private static byte[] miss() {
         return noise(0.35, 0.45, 0.01, 0.10);
     }
 
-    /** Ship sinking explosion -- 800ms: deep boom + crackle decay. */
+    /** ship sinking explosion -- 800ms: deep boom + crackle decay. */
     private static byte[] sunk() {
         int samples = (int) (SAMPLE_RATE * 0.80);
         double[] data = new double[samples];
@@ -82,7 +82,7 @@ final class SoundGenerator {
         return toWav(data, 0.75);
     }
 
-    /** Nuclear launch -- 1.5s: rising tone sweep + deep rumble + crackle. */
+    /** nuclear launch -- 1.5s: rising tone sweep + deep rumble + crackle. */
     private static byte[] nuclear() {
         int samples = (int) (SAMPLE_RATE * 1.5);
         double[] data = new double[samples];
@@ -101,7 +101,7 @@ final class SoundGenerator {
         return toWav(data, 0.85);
     }
 
-    /** Ship placed -- 120ms ascending two-tone chime. */
+    /** ship placed -- 120ms ascending two-tone chime. */
     private static byte[] placeShip() {
         int samples = (int) (SAMPLE_RATE * 0.12);
         double[] data = new double[samples];
@@ -114,7 +114,7 @@ final class SoundGenerator {
         return toWav(data, 0.5);
     }
 
-    /** Ship removed -- 100ms descending two-tone. */
+    /** ship removed -- 100ms descending two-tone. */
     private static byte[] removeShip() {
         int samples = (int) (SAMPLE_RATE * 0.10);
         double[] data = new double[samples];
@@ -127,7 +127,7 @@ final class SoundGenerator {
         return toWav(data, 0.5);
     }
 
-    /** Victory fanfare -- 2.5s rising arpeggio with reverb tail. */
+    /** victory fanfare -- 2.5s rising arpeggio with reverb tail. */
     private static byte[] victory() {
         int samples = (int) (SAMPLE_RATE * 2.5);
         double[] data = new double[samples];
@@ -149,7 +149,7 @@ final class SoundGenerator {
         return toWav(data, 0.7);
     }
 
-    /** Defeat stinger -- 1.8s descending minor chord with low rumble. */
+    /** defeat stinger -- 1.8s descending minor chord with low rumble. */
     private static byte[] defeat() {
         int samples = (int) (SAMPLE_RATE * 1.8);
         double[] data = new double[samples];
@@ -171,7 +171,7 @@ final class SoundGenerator {
         return toWav(data, 0.65);
     }
 
-    /** Turn start -- 150ms two-tone notification ping. */
+    /** turn start -- 150ms two-tone notification ping. */
     private static byte[] turnStart() {
         int samples = (int) (SAMPLE_RATE * 0.15);
         double[] data = new double[samples];
@@ -184,48 +184,48 @@ final class SoundGenerator {
         return toWav(data, 0.5);
     }
 
-    /** Menu music -- 8s atmospheric loop: soft pad + gentle wave ambience. */
+    /** menu music -- 8s atmospheric loop: soft pad + gentle wave ambience. */
     private static byte[] menuMusic() {
         int samples = (int) (SAMPLE_RATE * 8.0);
         double[] data = new double[samples];
         for (int i = 0; i < samples; i++) {
             double t = (double) i / SAMPLE_RATE;
             double progress = (double) i / samples;
-            // Soft pad chord: C3 + E3 + G3 + C4 with slow vibrato
+            // soft pad chord: c3 + e3 + g3 + c4 with slow vibrato
             double vibrato = 1.0 + 0.003 * Math.sin(2 * Math.PI * 0.25 * t);
             double pad = 0;
             pad += 0.12 * Math.sin(2 * Math.PI * 130.81 * vibrato * t);
             pad += 0.10 * Math.sin(2 * Math.PI * 164.81 * vibrato * t);
             pad += 0.08 * Math.sin(2 * Math.PI * 196.00 * vibrato * t);
             pad += 0.06 * Math.sin(2 * Math.PI * 261.63 * vibrato * t);
-            // Slow volume swell for loop seamlessness
+            // slow volume swell for loop seamlessness
             double swell = 0.7 + 0.3 * Math.sin(2 * Math.PI * progress);
-            // Gentle wave noise (filtered)
+            // gentle wave noise (filtered)
             double wave = 0.04 * Math.sin(2 * Math.PI * 0.3 * t) * noiseval(i);
             data[i] = pad * swell + wave;
         }
-        // Fade in/out for seamless loop
+        // fade in/out for seamless loop
         fadeEdges(data, 0.5, 0.5);
         return toWav(data, 0.45);
     }
 
-    /** Battle music -- 8s tense loop: driving pulse + low drone + percussive tick. */
+    /** battle music -- 8s tense loop: driving pulse + low drone + percussive tick. */
     private static byte[] battleMusic() {
         int samples = (int) (SAMPLE_RATE * 8.0);
         double[] data = new double[samples];
         for (int i = 0; i < samples; i++) {
             double t = (double) i / SAMPLE_RATE;
             double progress = (double) i / samples;
-            // Low drone: D2 + A2
+            // low drone: d2 + a2
             double drone = 0.18 * Math.sin(2 * Math.PI * 73.42 * t)
                          + 0.10 * Math.sin(2 * Math.PI * 110.00 * t);
-            // Driving pulse: tempo ~120 BPM (2 Hz)
+            // driving pulse: tempo ~120 bpm (2 hz)
             double beatPhase = (t * 2.0) % 1.0;
             double pulse = Math.exp(-8.0 * beatPhase) * 0.15 * Math.sin(2 * Math.PI * 110 * t);
-            // Percussive tick on every beat
+            // percussive tick on every beat
             double tickPhase = (t * 2.0) % 1.0;
             double tick = tickPhase < 0.03 ? 0.20 * noiseval(i) * (1.0 - tickPhase / 0.03) : 0;
-            // Tension pad: minor second interval
+            // tension pad: minor second interval
             double tension = 0.06 * Math.sin(2 * Math.PI * 146.83 * t)
                            * (0.5 + 0.5 * Math.sin(2 * Math.PI * 0.5 * t));
             double swell = 0.75 + 0.25 * Math.sin(2 * Math.PI * progress);
@@ -235,9 +235,9 @@ final class SoundGenerator {
         return toWav(data, 0.50);
     }
 
-    // ── Waveform helpers ────────────────────────────────────────────
+    // ── waveform helpers ────────────────────────────────────────────
 
-    /** Pure sine tone with linear attack and exponential decay. */
+    /** pure sine tone with linear attack and exponential decay. */
     private static byte[] tone(double duration, double freq, double amp, double attack) {
         int samples = (int) (SAMPLE_RATE * duration);
         double[] data = new double[samples];
@@ -255,7 +255,7 @@ final class SoundGenerator {
         return toWav(data, amp);
     }
 
-    /** Band-limited noise burst with attack and release. */
+    /** band-limited noise burst with attack and release. */
     private static byte[] noise(double duration, double amp, double attack, double release) {
         int samples = (int) (SAMPLE_RATE * duration);
         double[] data = new double[samples];
@@ -275,7 +275,7 @@ final class SoundGenerator {
         return toWav(data, amp);
     }
 
-    /** Simple pseudo-random noise from index (deterministic). */
+    /** simple pseudo-random noise from index (deterministic). */
     private static double noiseval(int i) {
         long x = i * 6364136223846793005L + 1442695040888963407L;
         x ^= x >> 33;
@@ -284,7 +284,7 @@ final class SoundGenerator {
         return ((x & 0x7FFFFFFF) / (double) 0x7FFFFFFF) * 2 - 1;
     }
 
-    /** Apply fade-in and fade-out to prevent click artifacts. */
+    /** apply fade-in and fade-out to prevent click artifacts. */
     private static void fadeEdges(double[] data, double fadeInSec, double fadeOutSec) {
         int fadeIn = (int) (SAMPLE_RATE * fadeInSec);
         int fadeOut = (int) (SAMPLE_RATE * fadeOutSec);
@@ -297,9 +297,9 @@ final class SoundGenerator {
         }
     }
 
-    // ── WAV encoding ────────────────────────────────────────────────
+    // ── wav encoding ────────────────────────────────────────────────
 
-    /** Convert double samples [-1,1] to a complete WAV file byte array. */
+    /** convert double samples [-1,1] to a complete wav file byte array. */
     private static byte[] toWav(double[] samples, double peak) {
         if (peak <= 0) peak = 1.0;
         int numSamples = samples.length;
@@ -308,7 +308,7 @@ final class SoundGenerator {
 
         ByteBuffer buf = ByteBuffer.allocate(fileSize).order(ByteOrder.LITTLE_ENDIAN);
 
-        // RIFF header
+        // riff header
         buf.put("RIFF".getBytes());
         buf.putInt(fileSize - 8);
         buf.put("WAVE".getBytes());
@@ -316,10 +316,10 @@ final class SoundGenerator {
         // fmt sub-chunk
         buf.put("fmt ".getBytes());
         buf.putInt(16);                   // sub-chunk size
-        buf.putShort((short) 1);          // PCM format
+        buf.putShort((short) 1);          // pcm format
         buf.putShort((short) 1);          // mono
         buf.putInt(SAMPLE_RATE);          // sample rate
-        buf.putInt(SAMPLE_RATE * 2);      // byte rate (SR * channels * bits/8)
+        buf.putInt(SAMPLE_RATE * 2);      // byte rate (sr * channels * bits/8)
         buf.putShort((short) 2);          // block align (channels * bits/8)
         buf.putShort((short) 16);         // bits per sample
 

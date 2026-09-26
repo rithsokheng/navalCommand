@@ -11,22 +11,22 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 
 /**
- * Full-bleed animated ocean backdrops (night scene and daytime "light sea").
- * One visual family, one class (SRP — extracted from the former DecorUtil
- * God object). Both backdrops bind their size to a Region so they always
+ * full-bleed animated ocean backdrops (night scene and daytime "light sea").
+ * one visual family, one class (srp — extracted from the former decorutil
+ * god object). both backdrops bind their size to a region so they always
  * cover the full window, and are purely decorative / mouse-transparent.
  */
 public final class OceanSceneRenderer {
 
     private OceanSceneRenderer() { }
 
-    /** Night ocean with the default horizon (40% sky). */
+    /** night ocean with the default horizon (40% sky). */
     public static Canvas animatedOceanScene(Region sizeSource) {
         return animatedOceanScene(sizeSource, 0.40);
     }
 
     /**
-     * A full painted night-ocean backdrop: gradient sky, a glowing moon,
+     * a full painted night-ocean backdrop: gradient sky, a glowing moon,
      * scattered stars, a horizon line, and several layers of filled,
      * parallaxing swells with moonlit shimmer on the water.
      */
@@ -37,7 +37,7 @@ public final class OceanSceneRenderer {
         canvas.setMouseTransparent(true);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        // Star field stored as fractional coordinates (0..1) so it rescales
+        // star field stored as fractional coordinates (0..1) so it rescales
         // cleanly with the canvas instead of being tied to one fixed size.
         java.util.Random starRng = new java.util.Random(42);
         double[][] starsFrac = new double[46][3];
@@ -47,7 +47,7 @@ public final class OceanSceneRenderer {
             starsFrac[i][2] = starRng.nextDouble();
         }
 
-        // Swell layers, back to front: [speed, amplitude, wavelength, y-position(0..1 of sea band), base opacity, warm-tint]
+        // swell layers, back to front: [speed, amplitude, wavelength, y-position(0..1 of sea band), base opacity, warm-tint]
         double[][] layers = {
                 {0.12, 8, 220, 0.10, 0.55, 0},
                 {0.20, 11, 170, 0.30, 0.65, 0},
@@ -81,7 +81,7 @@ public final class OceanSceneRenderer {
                 gc.clearRect(0, 0, width, height);
 
                 if (showSky) {
-                    // Sky.
+                    // sky.
                     LinearGradient sky = new LinearGradient(0, 0, 0, horizonY, false, CycleMethod.NO_CYCLE,
                             new Stop(0, Color.rgb(3, 9, 20)),
                             new Stop(0.6, Color.rgb(7, 20, 38)),
@@ -89,7 +89,7 @@ public final class OceanSceneRenderer {
                     gc.setFill(sky);
                     gc.fillRect(0, 0, width, horizonY);
 
-                    // Stars (gentle twinkle).
+                    // stars (gentle twinkle).
                     for (double[] s : starsFrac) {
                         double tw = 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(t[0] * 1.4 + s[2] * 20));
                         gc.setFill(Color.rgb(230, 240, 255, tw * 0.7));
@@ -97,7 +97,7 @@ public final class OceanSceneRenderer {
                         gc.fillOval(s[0] * width, s[1] * horizonY, r, r);
                     }
 
-                    // Moon.
+                    // moon.
                     RadialGradient moonGlow = new RadialGradient(0, 0, moonX, moonY, moonR * 5.2,
                             false, CycleMethod.NO_CYCLE,
                             new Stop(0, Color.rgb(255, 244, 214, 0.35)),
@@ -113,7 +113,7 @@ public final class OceanSceneRenderer {
                     gc.fillOval(moonX - moonR, moonY - moonR, moonR * 2, moonR * 2);
                 }
 
-                // Base sea fill — spans the whole canvas when there's no sky band.
+                // base sea fill — spans the whole canvas when there's no sky band.
                 LinearGradient sea = new LinearGradient(0, horizonY, 0, height, false, CycleMethod.NO_CYCLE,
                         new Stop(0, midSea),
                         new Stop(1, deepSea));
@@ -121,11 +121,11 @@ public final class OceanSceneRenderer {
                 gc.fillRect(0, horizonY, width, height - horizonY);
 
                 if (showSky) {
-                    // Soft horizon glow where the moon meets the water.
+                    // soft horizon glow where the moon meets the water.
                     gc.setFill(Color.rgb(255, 232, 190, 0.10));
                     gc.fillRect(0, horizonY, width, 3);
 
-                    // Moonlit shimmer column on the water — thin broken highlights.
+                    // moonlit shimmer column on the water — thin broken highlights.
                     for (int i = 0; i < 26; i++) {
                         double frac = i / 26.0;
                         double y = horizonY + frac * (height - horizonY);
@@ -138,7 +138,7 @@ public final class OceanSceneRenderer {
                     }
                 }
 
-                // Layered filled swells, drawn back (dim) to front (brighter, warmer near shore).
+                // layered filled swells, drawn back (dim) to front (brighter, warmer near shore).
                 for (double[] layer : layers) {
                     double speed = layer[0], amp = layer[1], wavelen = layer[2];
                     double yFrac = layer[3], baseAlpha = layer[4], warm = layer[5];
@@ -163,7 +163,7 @@ public final class OceanSceneRenderer {
                     gc.setFill(fillColor);
                     gc.fill();
 
-                    // A thin brighter crest line riding the top of this swell.
+                    // a thin brighter crest line riding the top of this swell.
                     gc.setStroke(crestColor);
                     gc.setLineWidth(1.2);
                     gc.beginPath();
@@ -175,7 +175,7 @@ public final class OceanSceneRenderer {
                     gc.stroke();
                 }
 
-                // Subtle vignette so foreground UI text stays readable.
+                // subtle vignette so foreground ui text stays readable.
                 gc.setFill(Color.rgb(2, 6, 12, 0.28));
                 gc.fillRect(0, 0, width, height * 0.16);
             }
@@ -186,9 +186,9 @@ public final class OceanSceneRenderer {
     }
 
     /**
-     * A brighter, daytime "light sea" backdrop — no moon/stars, a soft sun
-     * glow instead, and lighter sky/water tones than {@link #animatedOceanScene}.
-     * Same sizing contract: bind to a Region and add as the first StackPane child.
+     * a brighter, daytime "light sea" backdrop — no moon/stars, a soft sun
+     * glow instead, and lighter sky/water tones than {@link #animatedoceanscene}.
+     * same sizing contract: bind to a region and add as the first stackpane child.
      */
     public static Canvas lightSeaScene(Region sizeSource) {
         Canvas canvas = new Canvas();
@@ -235,7 +235,7 @@ public final class OceanSceneRenderer {
                 gc.setFill(sky);
                 gc.fillRect(0, 0, width, horizonY);
 
-                // Sun glow.
+                // sun glow.
                 RadialGradient sunGlow = new RadialGradient(0, 0, sunX, sunY, sunR * 5.0,
                         false, CycleMethod.NO_CYCLE,
                         new Stop(0, Color.rgb(255, 244, 214, 0.4)),
@@ -250,7 +250,7 @@ public final class OceanSceneRenderer {
                 gc.setFill(sunBody);
                 gc.fillOval(sunX - sunR, sunY - sunR, sunR * 2, sunR * 2);
 
-                // A few soft daylight clouds drifting slowly.
+                // a few soft daylight clouds drifting slowly.
                 gc.setFill(Color.rgb(255, 255, 255, 0.10));
                 for (int i = 0; i < 4; i++) {
                     double cx = ((i * 260 + t[0] * 6) % (width + 200)) - 100;
@@ -259,18 +259,18 @@ public final class OceanSceneRenderer {
                     gc.fillOval(cx + 30, cy - 8, 70, 20);
                 }
 
-                // Base sea fill beneath the horizon.
+                // base sea fill beneath the horizon.
                 LinearGradient sea = new LinearGradient(0, horizonY, 0, height, false, CycleMethod.NO_CYCLE,
                         new Stop(0, midSea),
                         new Stop(1, deepSea));
                 gc.setFill(sea);
                 gc.fillRect(0, horizonY, width, height - horizonY);
 
-                // Soft horizon glow line.
+                // soft horizon glow line.
                 gc.setFill(Color.rgb(255, 240, 210, 0.16));
                 gc.fillRect(0, horizonY, width, 3);
 
-                // Sunlit shimmer column on the water.
+                // sunlit shimmer column on the water.
                 for (int i = 0; i < 26; i++) {
                     double frac = i / 26.0;
                     double y = horizonY + frac * (height - horizonY);
@@ -282,7 +282,7 @@ public final class OceanSceneRenderer {
                     gc.fillRoundRect(sunX + wobble - segW / 2.0, y, segW, 1.6 + frac * 1.4, 4, 4);
                 }
 
-                // Layered filled swells, brighter cyan tones for the daylight feel.
+                // layered filled swells, brighter cyan tones for the daylight feel.
                 for (double[] layer : layers) {
                     double speed = layer[0], amp = layer[1], wavelen = layer[2];
                     double yFrac = layer[3], baseAlpha = layer[4], warm = layer[5];

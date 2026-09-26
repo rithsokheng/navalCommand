@@ -21,15 +21,15 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Composite view base for both battle screens (local + network).
- * Composes autonomous components (such as {@link WeaponConsole}) and manages
+ * composite view base for both battle screens (local + network).
+ * composes autonomous components (such as {@link weaponconsole}) and manages
  * the shared targeting ghost preview, fire-click pipeline, and navigation exit.
  */
 public abstract class AbstractBattleView {
 
     protected final ViewNavigator nav;
     protected final GameController controller;
-    /** Audio facade injected from the navigator — never the static singleton. */
+    /** audio facade injected from the navigator — never the static singleton. */
     protected final GameAudio audio;
 
     protected BoardGridPane ownGrid;
@@ -45,9 +45,9 @@ public abstract class AbstractBattleView {
         this.audio = nav.getAudio();
     }
 
-    // ================= Template method =================
+    // ================= template method =================
 
-    /** Assembles the shared battle skeleton. Subclasses customize via hooks only. */
+    /** assembles the shared battle skeleton. subclasses customize via hooks only. */
     public final StackPane build() {
         launcherBar = weaponConsole.node();
         refreshLauncherBar();
@@ -69,64 +69,64 @@ public abstract class AbstractBattleView {
         return root;
     }
 
-    // ================= Hooks (subclass responsibilities) =================
+    // ================= hooks (subclass responsibilities) =================
 
-    /** Builds the local player's grid, including any pre-rendered fleet/shots. */
+    /** builds the local player's grid, including any pre-rendered fleet/shots. */
     protected abstract BoardGridPane createOwnGrid();
 
-    /** Builds the enemy grid (no ship layout is ever rendered here). */
+    /** builds the enemy grid (no ship layout is ever rendered here). */
     protected abstract BoardGridPane createEnemyGrid();
 
-    /** Assembles the screen-specific chrome around the shared widgets. */
+    /** assembles the screen-specific chrome around the shared widgets. */
     protected abstract Pane assembleLayout();
 
-    /** Optional root decoration (e.g. animated ocean background). */
+    /** optional root decoration (e.g. animated ocean background). */
     protected abstract StackPane decorateRoot(Pane layout);
 
-    /** Called after the screen is visible: turn kick-off, network handlers, etc. */
+    /** called after the screen is visible: turn kick-off, network handlers, etc. */
     protected abstract void onViewShown();
 
-    /** Resolves a validated shot — locally via the controller, or over the network. */
+    /** resolves a validated shot — locally via the controller, or over the network. */
     protected abstract void resolveShot(Coordinate anchor);
 
-    /** True when the local player may act right now (gates ghost + fire clicks). */
+    /** true when the local player may act right now (gates ghost + fire clicks). */
     protected abstract boolean canFireNow();
 
-    /** Extra gating for weapon buttons beyond availability/ammo (network turn). */
+    /** extra gating for weapon buttons beyond availability/ammo (network turn). */
     protected boolean extraWeaponGate() { return true; }
 
-    /** The player whose launcher is currently aimed. */
+    /** the player whose launcher is currently aimed. */
     protected abstract Player firingPlayer();
 
-    /** Board size the shot will land on — used for live-cell checks. */
+    /** board size the shot will land on — used for live-cell checks. */
     protected abstract int targetBoardSize();
 
-    /** True when the cell has already been HIT/MISS/SUNK and cannot be re-shot. */
+    /** true when the cell has already been hit/miss/sunk and cannot be re-shot. */
     protected abstract boolean isCellAlreadyResolved(Coordinate c);
 
-    /** Ghost highlight style class, e.g. {@link BoardGridPane#GHOST_TARGET}. */
+    /** ghost highlight style class, e.g. {@link boardgridpane#ghost_target}. */
     protected abstract String ghostStyleClass();
 
-    /** Restores one cell after the ghost leaves it. */
+    /** restores one cell after the ghost leaves it. */
     protected abstract void repaintGhostCell(int row, int col);
 
-    /** Applies a weapon selection for the firing player. */
+    /** applies a weapon selection for the firing player. */
     protected abstract void selectWeapon(Weapon weapon);
 
-    /** UI reaction to a click on an already-shelled area. */
+    /** ui reaction to a click on an already-shelled area. */
     protected abstract void reportBlockedShot();
 
-    /** UI reaction to rejected nuclear launch codes (re-arm default + repaint). */
+    /** ui reaction to rejected nuclear launch codes (re-arm default + repaint). */
     protected abstract void onNuclearRejected();
 
-    /** Default orientation label text shared across battle views. */
+    /** default orientation label text shared across battle views. */
     protected final String orientationLabelText() {
         Orientation o = firingPlayer().weaponOrientation();
         String mode = o.isHorizontal() ? "\u2194 HORIZONTAL" : "\u2195 VERTICAL";
         return "ORIENTATION: " + mode + "   \u2022   [R / Right-Click] to Rotate   \u2022   Affects Salvo / Nuclear";
     }
 
-    /** Shared shot outcome audio playback. */
+    /** shared shot outcome audio playback. */
     protected final void playResultAudio(boolean anyHit, boolean anySunk) {
         if (anySunk) {
             audio.playSunk();
@@ -137,18 +137,18 @@ public abstract class AbstractBattleView {
         }
     }
 
-    /** Confirmation text shown by the shared exit dialog. */
+    /** confirmation text shown by the shared exit dialog. */
     protected abstract String exitPrompt();
 
-    /** Extra teardown when the player confirms exit (e.g. close socket). */
+    /** extra teardown when the player confirms exit (e.g. close socket). */
     protected void onExitConfirmed() { }
 
-    /** Notified after the shared orientation toggle; subclasses refresh labels. */
+    /** notified after the shared orientation toggle; subclasses refresh labels. */
     protected abstract void onOrientationChanged();
 
-    // ================= Shared behavior =================
+    // ================= shared behavior =================
 
-    /** Shared fire-click pipeline used by both battle screens. */
+    /** shared fire-click pipeline used by both battle screens. */
     private void handleFireClick(Coordinate anchor) {
         if (!canFireNow()) return;
 
@@ -238,7 +238,7 @@ public abstract class AbstractBattleView {
         }
     }
 
-    /** Shared EXIT button wired to the common confirm dialog. */
+    /** shared exit button wired to the common confirm dialog. */
     protected final Button buildExitButton() {
         Button exit = new Button("EXIT");
         exit.getStyleClass().add("danger-button");

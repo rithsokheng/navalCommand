@@ -1,8 +1,8 @@
 package com.battleship.view;
 
 /**
- * Background-music control. Split out of {@link GameAudio} so a client that only
- * starts/stops BGM can depend on just this slice (ISP).
+ * background-music control. split out of {@link gameaudio} so a client that only
+ * starts/stops bgm can depend on just this slice (isp).
  */
 public interface MusicAudio {
 

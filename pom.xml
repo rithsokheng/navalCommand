@@ -16,12 +16,12 @@
         <javafx.version>21.0.2</javafx.version>
         <gson.version>2.11.0</gson.version>
         <junit.version>5.10.2</junit.version>
-        <!-- Default classifier names your normal file 'naval-command-1.0.0.jar' -->
+        <!-- default classifier names your normal file 'naval-command-1.0.0.jar' -->
         <jar.classifier></jar.classifier>
     </properties>
 
     <dependencies>
-        <!-- JavaFX -->
+        <!-- javafx -->
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -33,14 +33,14 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- JSON persistence -->
+        <!-- json persistence -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
 
-        <!-- QR code generation (Play With a Friend invite codes) -->
+        <!-- qr code generation (play with a friend invite codes) -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
@@ -52,7 +52,7 @@
             <version>3.5.3</version>
         </dependency>
 
-        <!-- Testing -->
+        <!-- testing -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -63,7 +63,7 @@
 
     <build>
         <plugins>
-            <!-- Runs the JavaFX app: mvn javafx:run -->
+            <!-- runs the javafx app: mvn javafx:run -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -73,7 +73,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Builds an executable "fat" JAR with dependencies embedded -->
+            <!-- builds an executable "fat" jar with dependencies embedded -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -85,7 +85,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- Appends '-windows' to the jar name if the profile is active -->
+                            <!-- appends '-windows' to the jar name if the profile is active -->
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>${jar.classifier}</shadedClassifierName>
                             <transformers>
@@ -106,19 +106,19 @@
         </plugins>
     </build>
 
-    <!-- ADDED PROFILES BLOCK HERE -->
-    <!-- Replace your old profiles block with this one -->
+    <!-- added profiles block here -->
+    <!-- replace your old profiles block with this one -->
     <profiles>
         <profile>
             <id>build-windows</id>
             <properties>
-                <!-- Sets the primary platform classifier -->
+                <!-- sets the primary platform classifier -->
                 <javafx.platform>win</javafx.platform>
-                <!-- Appends "-windows" to your built JAR file name -->
+                <!-- appends "-windows" to your built jar file name -->
                 <jar.classifier>windows</jar.classifier>
             </properties>
             <dependencies>
-                <!-- Forces Windows native graphics dependencies to load explicitly -->
+                <!-- forces windows native graphics dependencies to load explicitly -->
                 <dependency>
                     <groupId>org.openjfx</groupId>
                     <artifactId>javafx-graphics</artifactId>

@@ -7,15 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Aggregate root for one player's own waters: their hulls, their hit state, and
+ * aggregate root for one player's own waters: their hulls, their hit state, and
  * the fleet-deployment invariants.
  *
- * <p>Renamed from {@code Board} (V1.3): there is no such thing as "the board" any
- * more. Each player owns a {@code PrimaryGrid} (their real fleet) and a
- * {@link com.battleship.model.fog.TrackingGrid} (what they know about the enemy).
- * Opponents, views and AI never receive this object — {@link Player} keeps it
- * private and exposes only the narrow {@link FleetReadout}, {@link FleetDeployment}
- * and {@link ShotTarget} command surfaces.</p>
+ * <p>renamed from {@code board} (v1.3): there is no such thing as "the board" any
+ * more. each player owns a {@code primarygrid} (their real fleet) and a
+ * {@link com.battleship.model.fog.trackinggrid} (what they know about the enemy).
+ * opponents, views and ai never receive this object — {@link player} keeps it
+ * private and exposes only the narrow {@link fleetreadout}, {@link fleetdeployment}
+ * and {@link shottarget} command surfaces.</p>
  */
 public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
 
@@ -49,7 +49,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         return cells;
     }
 
-    // ---------- FleetDeployment ----------
+    // ---------- fleetdeployment ----------
 
     @Override
     public boolean canDeploy(ShipType type, Coordinate start, Orientation orientation) {
@@ -73,7 +73,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         return true;
     }
 
-    /** Removes whatever hull is currently occupying coordinate {@code c}. */
+    /** removes whatever hull is currently occupying coordinate {@code c}. */
     @Override
     public boolean undeployAt(Coordinate c) {
         if (c == null || !c.isWithinBounds(size)) return false;
@@ -98,7 +98,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         }
     }
 
-    // ---------- ShotTarget ----------
+    // ---------- shottarget ----------
 
     @Override
     public boolean isCellResolved(Coordinate c) {
@@ -106,7 +106,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         return status == CellStatus.HIT || status == CellStatus.MISS || status == CellStatus.SUNK;
     }
 
-    /** Resolves a shot at the given coordinate and updates grid state. */
+    /** resolves a shot at the given coordinate and updates grid state. */
     @Override
     public ShotResult receiveShot(Coordinate c) {
         if (!c.isWithinBounds(size)) {
@@ -133,7 +133,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         return new ShotResult(c, CellStatus.HIT, null);
     }
 
-    // ---------- FleetReadout ----------
+    // ---------- fleetreadout ----------
 
     @Override
     public int size() {
@@ -161,7 +161,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         return ships.stream().allMatch(Ship::isSunk);
     }
 
-    /** Cells of this grid that have not been shot at yet. */
+    /** cells of this grid that have not been shot at yet. */
     public List<Coordinate> unshotCells() {
         List<Coordinate> result = new ArrayList<>();
         for (int r = 0; r < size; r++) {
@@ -175,7 +175,7 @@ public class PrimaryGrid implements FleetReadout, FleetDeployment, ShotTarget {
         return result;
     }
 
-    /** Number of hulls currently deployed (used by the placement counter). */
+    /** number of hulls currently deployed (used by the placement counter). */
     public int deployedShipCount() {
         return ships.size();
     }

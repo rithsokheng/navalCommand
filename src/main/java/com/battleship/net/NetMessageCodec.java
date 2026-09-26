@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * Gson wire codec for the sealed {@link NetMessage} hierarchy.
+ * gson wire codec for the sealed {@link netmessage} hierarchy.
  *
- * Gson cannot serialize/deserialize a sealed interface polymorphically on its
+ * gson cannot serialize/deserialize a sealed interface polymorphically on its
  * own, so this codec adds a "type" discriminator field on the wire and uses
  * pattern matching to pick the record class when decoding.
  */

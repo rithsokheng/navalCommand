@@ -27,13 +27,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Application-service layer: orchestrates the game flow
+ * application-service layer: orchestrates the game flow
  * (menu -> mode select -> board select -> ship placement -> battle -> game over)
- * and mediates between View and Model via callbacks.
+ * and mediates between view and model via callbacks.
  *
- * <p>It is deliberately a thin mediator (SRP): all placement logic lives in
- * {@link PlacementService}, all turn/firing logic in {@link BattleService}.
- * Views never receive mutable domain objects — they get player names, fleet
+ * <p>it is deliberately a thin mediator (srp): all placement logic lives in
+ * {@link placementservice}, all turn/firing logic in {@link battleservice}.
+ * views never receive mutable domain objects — they get player names, fleet
  * read-outs and tracking grids.</p>
  */
 public class GameController {
@@ -43,7 +43,7 @@ public class GameController {
     private final NetworkFireService networkFireService;
     private final SaveGameService saveGameService;
 
-    /** Testable constructor — inject services (DIP). */
+    /** testable constructor — inject services (dip). */
     public GameController(PlacementService placementService, BattleService battleService, SaveGameService saveGameService) {
         this.placementService = placementService;
         this.battleService = battleService;
@@ -55,7 +55,7 @@ public class GameController {
         this(placementService, battleService, new SaveGameService());
     }
 
-    /** Production convenience constructor. */
+    /** production convenience constructor. */
     public GameController() {
         this(new PlacementService(), new BattleService(), new SaveGameService());
     }
@@ -66,12 +66,12 @@ public class GameController {
 
     private Player player1;
     private Player player2;
-    private Turn placingTurn; // whose turn it is in SHIP_PLACEMENT (hotseat only)
+    private Turn placingTurn; // whose turn it is in ship_placement (hotseat only)
 
     private Consumer<GameState> onStateChanged;
     private Consumer<Player> onGameOver;
 
-    // ---------- Flow: Mode & Theater selection ----------
+    // ---------- flow: mode & theater selection ----------
 
     public void setMode(GameMode mode) {
         this.selectedMode = mode;
@@ -85,7 +85,7 @@ public class GameController {
     }
 
     private void initializeGame() {
-        // Polymorphic players replace the old isHuman boolean (V2.2): the mode
+        // polymorphic players replace the old ishuman boolean (v2.2): the mode
         // decides which subclass is instantiated, not a flag inside one class.
         boolean vsHuman = selectedMode == GameMode.HOTSEAT || selectedMode == GameMode.ONLINE || selectedMode == null;
         boolean hotseat = selectedMode == GameMode.HOTSEAT;
@@ -98,13 +98,13 @@ public class GameController {
         placingTurn = Turn.PLAYER_1;
     }
 
-    // ---------- Flow: Ship placement (delegates to PlacementService) ----------
+    // ---------- flow: ship placement (delegates to placementservice) ----------
 
     public Player getPlacingPlayer() {
         return placingTurn == Turn.PLAYER_1 ? player1 : player2;
     }
 
-    /** Ship types still needed for the player, keyed by type, with remaining count. */
+    /** ship types still needed for the player, keyed by type, with remaining count. */
     public Map<ShipType, Integer> getRemainingShipCounts(Player player) {
         return placementService.getRemainingShipCounts(player, selectedTheater);
     }
@@ -117,7 +117,7 @@ public class GameController {
         return placementService.canDeploy(player, type, start, orientation);
     }
 
-    /** Pulls an already-deployed ship at the given coordinate back into the dock ("put back"). */
+    /** pulls an already-deployed ship at the given coordinate back into the dock ("put back"). */
     public boolean removeShipAt(Player player, Coordinate c) {
         return placementService.undeployAt(player, c);
     }
@@ -130,12 +130,12 @@ public class GameController {
         placementService.resetDeployment(player);
     }
 
-    /** Randomly deploys all remaining ships for the player (spec 4.2, retry until success). */
+    /** randomly deploys all remaining ships for the player (spec 4.2, retry until success). */
     public void autoPlaceRemaining(Player player) {
         placementService.autoDeployAll(player, selectedTheater);
     }
 
-    /** Called when the placing player hits READY. Advances placement or starts battle. */
+    /** called when the placing player hits ready. advances placement or starts battle. */
     public void confirmReady() {
         if (selectedMode == GameMode.HOTSEAT) {
             if (placingTurn == Turn.PLAYER_1) {
@@ -145,13 +145,13 @@ public class GameController {
                 startBattle();
             }
         } else {
-            // vs AI: auto-deploy the AI's fleet, then start battle.
+            // vs ai: auto-deploy the ai's fleet, then start battle.
             autoPlaceRemaining(player2);
             startBattle();
         }
     }
 
-    /** Called from PassScreen "continue" to resume ship placement for player 2. */
+    /** called from passscreen "continue" to resume ship placement for player 2. */
     public void resumePlacementAfterPass() {
         changeState(GameState.SHIP_PLACEMENT);
     }
@@ -161,7 +161,7 @@ public class GameController {
         changeState(GameState.BATTLE);
     }
 
-    // ---------- Flow: Battle (delegates to BattleService) ----------
+    // ---------- flow: battle (delegates to battleservice) ----------
 
     public Player rollInitiative() { return battleService.rollInitiative(); }
     public Player getCurrentPlayer() { return battleService.getCurrentPlayer(); }
@@ -184,8 +184,8 @@ public class GameController {
     }
 
     /**
-     * Fires the current player's selected weapon, anchored at the given cell.
-     * Delegates to the BattleService; reacts to game-over if the shot ended the match.
+     * fires the current player's selected weapon, anchored at the given cell.
+     * delegates to the battleservice; reacts to game-over if the shot ended the match.
      */
     public LauncherFireResult fireLauncher(Coordinate anchor) {
         LauncherFireResult fireResult = battleService.fire(anchor);
@@ -193,7 +193,7 @@ public class GameController {
         return fireResult;
     }
 
-    /** Has the current (machine) player choose a weapon + target, then fires it. */
+    /** has the current (machine) player choose a weapon + target, then fires it. */
     public LauncherFireResult fireAiLauncher() {
         LauncherFireResult fireResult = battleService.fireAiLauncher();
         reactToBattleEnd();
@@ -201,9 +201,9 @@ public class GameController {
     }
 
     /**
-     * Single place that recognises a finished match, for both human and AI shots.
-     * On a decisive shot the BattleService keeps the turn with the winner, so
-     * {@link BattleService#getCurrentPlayer()} is the winning player.
+     * single place that recognises a finished match, for both human and ai shots.
+     * on a decisive shot the battleservice keeps the turn with the winner, so
+     * {@link battleservice#getcurrentplayer()} is the winning player.
      */
     private void reactToBattleEnd() {
         if (battleService.isBattleOver()) {
@@ -212,7 +212,7 @@ public class GameController {
         }
     }
 
-    // ---------- State plumbing ----------
+    // ---------- state plumbing ----------
 
     private void changeState(GameState newState) {
         this.state = newState;
@@ -229,32 +229,32 @@ public class GameController {
     public GameMode getSelectedMode() { return selectedMode; }
     public Theater getSelectedTheater() { return selectedTheater; }
 
-    // ---------- Read-only player queries (fixes F2: views never receive mutable domain objects) ----------
+    // ---------- read-only player queries (fixes f2: views never receive mutable domain objects) ----------
 
-    /** Name of player 1 or 2 (1-indexed). */
+    /** name of player 1 or 2 (1-indexed). */
     public String getPlayerName(int index) {
         return index == 1 ? player1.name() : player2.name();
     }
 
-    /** Read-only fleet projection of player 1 or 2 (1-indexed). */
+    /** read-only fleet projection of player 1 or 2 (1-indexed). */
     public FleetReadout getPlayerFleet(int index) {
         return index == 1 ? player1 : player2;
     }
 
-    /** The knowledge grid of player 1 or 2 (1-indexed) — the only enemy model a view may read. */
+    /** the knowledge grid of player 1 or 2 (1-indexed) — the only enemy model a view may read. */
     public TrackingGrid getTrackingGrid(int index) {
         return index == 1 ? player1.trackingGrid() : player2.trackingGrid();
     }
 
-    /** Identity check for game-over reporting: is the given player player 1? */
+    /** identity check for game-over reporting: is the given player player 1? */
     public boolean isFirstPlayer(Player player) {
         return player == player1;
     }
 
-    // ---------- Network fire pipeline (fixes F7: view no longer mutates the domain) ----------
+    // ---------- network fire pipeline (fixes f7: view no longer mutates the domain) ----------
 
     /**
-     * Applies the domain bookkeeping for a network shot (ammo consumption,
+     * applies the domain bookkeeping for a network shot (ammo consumption,
      * weapon reset) and returns the order to transmit over the wire.
      */
     public NetworkFireService.NetworkShotOrder fireNetworkShot(Player shooter, Weapon weapon,
@@ -262,19 +262,19 @@ public class GameController {
         return networkFireService.fireNetworkShot(shooter, weapon, anchor, orientation);
     }
 
-    /** Tops the shooter's nuclear ammo back up after a successful quiz resupply. */
+    /** tops the shooter's nuclear ammo back up after a successful quiz resupply. */
     public void resupplyNuclearAmmo(Player shooter) {
         networkFireService.resupplyNuclear(shooter);
     }
 
-    // ---------- Persistence (Smell 5.3: connects SaveGameService to controller) ----------
+    // ---------- persistence (smell 5.3: connects savegameservice to controller) ----------
 
     /**
-     * Serializes the current match state and writes it to a timestamped JSON file.
+     * serializes the current match state and writes it to a timestamped json file.
      *
      * @param directory the folder to save into
      * @return the saved file's path
-     * @throws IOException if disk write fails
+     * @throws ioexception if disk write fails
      */
     public Path saveGame(Path directory) throws IOException {
         if (player1 == null || player2 == null) {
@@ -287,12 +287,12 @@ public class GameController {
         return saveGameService.save(dto, directory);
     }
 
-    /** Loads a previously saved game DTO from disk. */
+    /** loads a previously saved game dto from disk. */
     public GameSaveDTO loadGame(Path file) throws IOException {
         return saveGameService.load(file);
     }
 
-    // ---------- Mutable access (package-private; controller-internal/tests only — fixes F2) ----------
+    // ---------- mutable access (package-private; controller-internal/tests only — fixes f2) ----------
 
 
     Player getPlayer1() { return player1; }

@@ -20,9 +20,9 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
- * ISSUE 3: shown after mode selection. Three battlefield cards with a mini
- * grid preview, ship list, and SELECT button. Stores selection via
- * controller.setTheater(...), which also initializes the boards/players.
+ * issue 3: shown after mode selection. three battlefield cards with a mini
+ * grid preview, ship list, and select button. stores selection via
+ * controller.settheater(...), which also initializes the boards/players.
  */
 public class BoardSelectView {
 

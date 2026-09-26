@@ -30,14 +30,14 @@ class BlastPatternRotationTest {
         assertEquals(3, vertical.rows());
         assertEquals(1, vertical.cols());
 
-        // Parameterless coverage on the already-rotated pattern
+        // parameterless coverage on the already-rotated pattern
         List<Coordinate> cells = vertical.coverage(new Coordinate(2, 2));
         assertEquals(3, cells.size());
         assertTrue(cells.contains(new Coordinate(2, 2)));
         assertTrue(cells.contains(new Coordinate(3, 2)));
         assertTrue(cells.contains(new Coordinate(4, 2)));
 
-        // Base pattern with Orientation.VERTICAL produces the same result
+        // base pattern with orientation.vertical produces the same result
         List<Coordinate> baseOriented = salvo.coverage(new Coordinate(2, 2), Orientation.VERTICAL);
         assertEquals(cells, baseOriented);
     }

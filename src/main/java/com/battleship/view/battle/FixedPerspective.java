@@ -9,8 +9,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Strategy implementation for single-player (vs AI) combat: the viewport is permanently
- * pinned to Player 1 (the human user) on the left, observing Player 2 (the AI) on the right.
+ * strategy implementation for single-player (vs ai) combat: the viewport is permanently
+ * pinned to player 1 (the human user) on the left, observing player 2 (the ai) on the right.
  */
 public class FixedPerspective implements BattlePerspective {
 

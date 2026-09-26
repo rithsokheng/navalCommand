@@ -12,9 +12,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
- * Builds the two modal overlays reachable from the Main Menu: the
- * "Tactical Manual" (How To Play) and the "Operational Controls" (Options)
- * panels. Both are self-contained StackPanes meant to be stacked on top of
+ * builds the two modal overlays reachable from the main menu: the
+ * "tactical manual" (how to play) and the "operational controls" (options)
+ * panels. both are self-contained stackpanes meant to be stacked on top of
  * whatever screen is currently showing, dismissed by removing them again.
  */
 final class MenuOverlays {
@@ -22,7 +22,7 @@ final class MenuOverlays {
     private MenuOverlays() { }
 
     // ---------------------------------------------------------------
-    // HOW TO PLAY
+    // how to play
     // ---------------------------------------------------------------
 
     static StackPane howToPlay(GameAudio audio, Runnable onClose) {
@@ -86,7 +86,7 @@ final class MenuOverlays {
     }
 
     // ---------------------------------------------------------------
-    // OPTIONS
+    // options
     // ---------------------------------------------------------------
 
     static StackPane options(GameAudio audio, Runnable onClose) {
@@ -101,7 +101,7 @@ final class MenuOverlays {
         header.setAlignment(Pos.CENTER);
         header.setMaxWidth(Double.MAX_VALUE);
 
-        // --- Audio & Communications ---
+        // --- audio & communications ---
         Label audioHeading = sectionHeading("1. AUDIO & COMMUNICATIONS");
         Slider master = themedSlider(audio.getMasterVolume() * 100);
         Slider sfx = themedSlider(audio.getSfxVolume() * 100);
@@ -135,7 +135,7 @@ final class MenuOverlays {
         audioRow.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(audioGrid, Priority.ALWAYS);
 
-        // --- Graphics & Interface ---
+        // --- graphics & interface ---
         Label gfxHeading = sectionHeading("2. GRAPHICS & INTERFACE");
         ToggleGroup resGroup = new ToggleGroup();
         ToggleGroup scaleGroup = new ToggleGroup();
@@ -151,7 +151,7 @@ final class MenuOverlays {
         gfxGrid.add(rowLabel("\u2728  ANIMATIONS"), 0, 2);
         gfxGrid.add(segmentedGroupWithToggle(animGroup, "On", "Off"), 1, 2);
 
-        // --- Controls & Shortcuts ---
+        // --- controls & shortcuts ---
         Label ctrlHeading = sectionHeading("3. CONTROLS & SHORTCUTS");
         HBox ctrlRow = new HBox(24,
                 keybindPair("\u2328  FIRE", "CLICK"),
@@ -276,7 +276,7 @@ final class MenuOverlays {
     }
 
     // ---------------------------------------------------------------
-    // Shared chrome
+    // shared chrome
     // ---------------------------------------------------------------
 
     private static Region divider() {

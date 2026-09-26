@@ -10,9 +10,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
- * JavaFX application entry point. Owns the primary Stage/Scene and implements
- * {@link ViewNavigator} — views receive the navigator abstraction (never this
- * concrete Application class), so navigation can be mocked in tests.
+ * javafx application entry point. owns the primary stage/scene and implements
+ * {@link viewnavigator} — views receive the navigator abstraction (never this
+ * concrete application class), so navigation can be mocked in tests.
  */
 public class MainApp extends Application implements ViewNavigator {
 
@@ -38,7 +38,7 @@ public class MainApp extends Application implements ViewNavigator {
         scene.setRoot(root);
     }
 
-    /** Lets standalone screens (e.g. the network multiplayer flow) push themselves directly. */
+    /** lets standalone screens (e.g. the network multiplayer flow) push themselves directly. */
     public void setScreen(javafx.scene.Parent root) {
         setRoot(root);
     }
@@ -79,7 +79,7 @@ public class MainApp extends Application implements ViewNavigator {
         setRoot(new GameOverView(this, controller, winner).build());
     }
 
-    // ---------- Network flow (ViewNavigator contract) ----------
+    // ---------- network flow (viewnavigator contract) ----------
 
     @Override
     public void showNetworkShipPlacement(NetworkGameSession session) {
@@ -101,7 +101,7 @@ public class MainApp extends Application implements ViewNavigator {
     public Stage getStage() { return stage; }
     public GameController getController() { return controller; }
 
-    /** Views play sounds through the GameAudio abstraction, never the singleton. */
+    /** views play sounds through the gameaudio abstraction, never the singleton. */
     @Override
     public GameAudio getAudio() { return audio; }
 

@@ -5,15 +5,15 @@ import com.battleship.net.NetworkGameSession;
 import javafx.scene.Parent;
 
 /**
- * Narrow role interface dedicated strictly to screen and view routing.
+ * narrow role interface dedicated strictly to screen and view routing.
  *
- * <p>Satisfies the <strong>Interface Segregation Principle (ISP)</strong> by allowing
+ * <p>satisfies the <strong>interface segregation principle (isp)</strong> by allowing
  * screens and dialogs to depend solely on navigation capabilities without forcing a
  * dependency on window stages or audio managers.</p>
  */
 public interface ScreenNavigator {
 
-    // ---------- Local (vs AI / hotseat) flow ----------
+    // ---------- local (vs ai / hotseat) flow ----------
 
     void showMainMenu();
     void showModeSelect();
@@ -24,12 +24,12 @@ public interface ScreenNavigator {
     void showGameOver(Player winner);
     void showMultiplayerLobby();
 
-    // ---------- Network ("Play With a Friend") flow ----------
+    // ---------- network ("play with a friend") flow ----------
 
     void showNetworkShipPlacement(NetworkGameSession session);
     void showNetworkBattle(NetworkGameSession session);
     void showNetworkGameOver(NetworkGameSession session, boolean won);
 
-    /** Lets standalone screens push themselves directly. */
+    /** lets standalone screens push themselves directly. */
     void setScreen(Parent root);
 }

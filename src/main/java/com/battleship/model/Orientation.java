@@ -3,8 +3,8 @@ package com.battleship.model;
 import java.util.Random;
 
 /**
- * Ship and launcher orientation — replaces raw boolean flags.
- * Self-documenting at call sites and extensible (e.g. DIAGONAL variants),
+ * ship and launcher orientation — replaces raw boolean flags.
+ * self-documenting at call sites and extensible (e.g. diagonal variants),
  * unlike a bare {@code boolean horizontal} whose meaning must be guessed.
  */
 public enum Orientation {

@@ -1,8 +1,8 @@
 package com.battleship.view;
 
 /**
- * One-shot sound effects. Split out of {@link GameAudio} so a client that only
- * triggers SFX can depend on just this slice (ISP), instead of on music and
+ * one-shot sound effects. split out of {@link gameaudio} so a client that only
+ * triggers sfx can depend on just this slice (isp), instead of on music and
  * volume control it never touches.
  */
 public interface SfxAudio {
@@ -16,6 +16,6 @@ public interface SfxAudio {
     void playPlaceShip();
     void playRemoveShip();
     void playTurnStart();
-    /** Plays the appropriate end-of-match sting (victory or defeat). */
+    /** plays the appropriate end-of-match sting (victory or defeat). */
     void playGameOver(boolean won);
 }

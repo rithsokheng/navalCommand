@@ -8,26 +8,26 @@ import com.battleship.model.ShipType;
 import java.util.List;
 
 /**
- * Type-safe wire protocol for host&lt;-&gt;client messages: each variant is its
+ * type-safe wire protocol for host&lt;-&gt;client messages: each variant is its
  * own record carrying only the fields it needs (sealed hierarchy — the compiler
- * enforces exhaustiveness; stringly-typed dispatch like `case "BANANA"` is
+ * enforces exhaustiveness; stringly-typed dispatch like `case "banana"` is
  * impossible).
  *
- * <p>Wire format: one JSON object per line via {@link NetMessageCodec}, which adds
- * a "type" discriminator field for Gson transport.</p>
+ * <p>wire format: one json object per line via {@link netmessagecodec}, which adds
+ * a "type" discriminator field for gson transport.</p>
  *
- * <p>{@link Fire} carries a <em>weapon id</em> (a stable string owned by the weapon
+ * <p>{@link fire} carries a <em>weapon id</em> (a stable string owned by the weapon
  * strategy) rather than an enum constant, so a plugin weapon can travel the wire
- * without a new release of the protocol class (V3.1).</p>
+ * without a new release of the protocol class (v3.1).</p>
  *
- * Message flow:
- *   HELLO        client -> host       first message after TCP connect (join code)
- *   WELCOME      host -> client       accepted; battlefield to use
- *   REJECT       host -> client       bad code / host busy; connection will close
- *   READY        either direction     sender has finished ship placement
- *   START        host -> client       "HOST" or "CLIENT" goes first
- *   FIRE         attacker -> defender weapon id, anchor cell and orientation
- *   FIRE_RESULT  defender -> attacker resolved cells, sunk ships, lost flag
+ * message flow:
+ *   hello        client -> host       first message after tcp connect (join code)
+ *   welcome      host -> client       accepted; battlefield to use
+ *   reject       host -> client       bad code / host busy; connection will close
+ *   ready        either direction     sender has finished ship placement
+ *   start        host -> client       "host" or "client" goes first
+ *   fire         attacker -> defender weapon id, anchor cell and orientation
+ *   fire_result  defender -> attacker resolved cells, sunk ships, lost flag
  */
 public sealed interface NetMessage {
 
@@ -46,9 +46,9 @@ public sealed interface NetMessage {
     record FireResult(List<CellResult> results, List<SunkShipInfo> sunkShips, boolean defenderLost)
             implements NetMessage { }
 
-    /** One resolved cell from a FIRE_RESULT. */
+    /** one resolved cell from a fire_result. */
     record CellResult(Coordinate coordinate, CellStatus outcome) { }
 
-    /** A ship that was sunk by a FIRE_RESULT, with every cell it occupied. */
+    /** a ship that was sunk by a fire_result, with every cell it occupied. */
     record SunkShipInfo(ShipType shipType, List<Coordinate> cells) { }
 }

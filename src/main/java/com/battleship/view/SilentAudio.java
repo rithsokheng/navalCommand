@@ -1,21 +1,21 @@
 package com.battleship.view;
 
 /**
- * Null Object implementation of {@link GameAudio}: every method is a no-op and
+ * null object implementation of {@link gameaudio}: every method is a no-op and
  * the settings permanently report "silent".
  *
- * <p>Lets screens be built and unit-tested without any audio backend, and
- * removes null checks at every call site — the Null Object pattern suggested in
- * review. Distinct from {@code SoundManager}, which is the real backend.</p>
+ * <p>lets screens be built and unit-tested without any audio backend, and
+ * removes null checks at every call site — the null object pattern suggested in
+ * review. distinct from {@code soundmanager}, which is the real backend.</p>
  */
 public final class SilentAudio implements GameAudio {
 
-    /** Shared stateless instance. */
+    /** shared stateless instance. */
     public static final SilentAudio INSTANCE = new SilentAudio();
 
     public SilentAudio() { }
 
-    // ---------- SfxAudio: nothing to play ----------
+    // ---------- sfxaudio: nothing to play ----------
 
     @Override public void playClick() { }
     @Override public void playFire() { }
@@ -28,13 +28,13 @@ public final class SilentAudio implements GameAudio {
     @Override public void playTurnStart() { }
     @Override public void playGameOver(boolean won) { }
 
-    // ---------- MusicAudio: nothing to play ----------
+    // ---------- musicaudio: nothing to play ----------
 
     @Override public void playMenuMusic() { }
     @Override public void playBattleMusic() { }
     @Override public void stopBgm() { }
 
-    // ---------- AudioSettings: permanently silent ----------
+    // ---------- audiosettings: permanently silent ----------
 
     @Override public void setMasterVolume(double v) { }
     @Override public double getMasterVolume() { return 0.0; }

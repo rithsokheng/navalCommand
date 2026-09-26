@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Validates the {@link SilentAudio} Null Object and the {@link GameAudio} role split. */
+/** validates the {@link silentaudio} null object and the {@link gameaudio} role split. */
 class SilentAudioTest {
 
     @Test
@@ -55,7 +55,7 @@ class SilentAudioTest {
         });
     }
 
-    /** GameAudio is the composition of the three narrow roles (ISP fix). */
+    /** gameaudio is the composition of the three narrow roles (isp fix). */
     @Test
     void satisfiesEveryNarrowAudioRole() {
         GameAudio audio = SilentAudio.INSTANCE;

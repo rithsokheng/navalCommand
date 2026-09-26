@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
-/** Full-screen opaque overlay shown between hotseat turns (spec 10). */
+/** full-screen opaque overlay shown between hotseat turns (spec 10). */
 public class PassScreen {
 
     private final String nextPlayerName;

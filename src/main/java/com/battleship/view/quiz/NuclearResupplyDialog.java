@@ -18,10 +18,10 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 /**
- * "Resupply inbound" pop-up shown the moment a player's Nuclear ammo hits
- * zero. Unlike {@link NuclearLaunchDialog} this is NON-blocking (no
- * showAndWait) — it counts down from 30 seconds in the corner while the game
- * keeps going, then auto-closes and grants +1 Nuclear shot with no action
+ * "resupply inbound" pop-up shown the moment a player's nuclear ammo hits
+ * zero. unlike {@link nuclearlaunchdialog} this is non-blocking (no
+ * showandwait) — it counts down from 30 seconds in the corner while the game
+ * keeps going, then auto-closes and grants +1 nuclear shot with no action
  * required from the player.
  */
 public final class NuclearResupplyDialog {
@@ -31,7 +31,7 @@ public final class NuclearResupplyDialog {
 
     private NuclearResupplyDialog() { }
 
-    /** Dismisses any currently running resupply countdown cleanly without resupplying. */
+    /** dismisses any currently running resupply countdown cleanly without resupplying. */
     public static void dismissActive() {
         if (activeStage != null) {
             try {
@@ -41,7 +41,7 @@ public final class NuclearResupplyDialog {
         }
     }
 
-    /** Shows the countdown and invokes {@code onResupplied} once it reaches zero. */
+    /** shows the countdown and invokes {@code onresupplied} once it reaches zero. */
     public static void show(Window owner, Runnable onResupplied) {
         dismissActive();
         Stage stage = new Stage(StageStyle.TRANSPARENT);

@@ -2,7 +2,7 @@ package com.battleship.ai;
 
 import com.battleship.model.GameMode;
 
-/** Factory that instantiates the correct AIStrategy for a given Difficulty or GameMode. */
+/** factory that instantiates the correct aistrategy for a given difficulty or gamemode. */
 public class AIFactory {
 
     private AIFactory() { } // prevent instantiation
@@ -15,7 +15,7 @@ public class AIFactory {
         };
     }
 
-    /** Returns null for HOTSEAT, ONLINE, or null input — no AI needed. Prefer {@link #createOptional(GameMode)}. */
+    /** returns null for hotseat, online, or null input — no ai needed. prefer {@link #createoptional(gamemode)}. */
     public static AIStrategy create(GameMode mode) {
         if (mode == null || mode == GameMode.HOTSEAT || mode == GameMode.ONLINE) {
             return null;
@@ -28,7 +28,7 @@ public class AIFactory {
         };
     }
 
-    /** Returns an Optional AIStrategy, empty for HOTSEAT. */
+    /** returns an optional aistrategy, empty for hotseat. */
     public static java.util.Optional<AIStrategy> createOptional(GameMode mode) {
         return java.util.Optional.ofNullable(create(mode));
     }

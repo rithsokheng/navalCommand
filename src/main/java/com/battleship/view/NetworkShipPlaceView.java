@@ -17,12 +17,12 @@ import javafx.scene.layout.VBox;
 import java.security.SecureRandom;
 
 /**
- * Ship placement for a network match. Drives a READY/READY -&gt; (host decides)
- * START handshake over the socket instead of the local PASS_SCREEN flow.
+ * ship placement for a network match. drives a ready/ready -&gt; (host decides)
+ * start handshake over the socket instead of the local pass_screen flow.
  *
- * <p>Extends {@link AbstractShipPlaceView}, so the dock, drag-and-drop, ghost
- * preview, orientation handling, counter and READY gating are all inherited.
- * This class contributes only the network chrome and the socket handshake.</p>
+ * <p>extends {@link abstractshipplaceview}, so the dock, drag-and-drop, ghost
+ * preview, orientation handling, counter and ready gating are all inherited.
+ * this class contributes only the network chrome and the socket handshake.</p>
  */
 public class NetworkShipPlaceView extends AbstractShipPlaceView {
 
@@ -124,7 +124,7 @@ public class NetworkShipPlaceView extends AbstractShipPlaceView {
         return new StackPane(layout); // no ocean backdrop on the network screen
     }
 
-    /** Once READY has been sent the button must stay disabled even if the fleet changes. */
+    /** once ready has been sent the button must stay disabled even if the fleet changes. */
     @Override
     protected boolean isReadyLocked() {
         return localReady;
@@ -136,7 +136,7 @@ public class NetworkShipPlaceView extends AbstractShipPlaceView {
         netSession.getSession().setOnDisconnected(this::handleDisconnect);
     }
 
-    // ---------- Network flow: READY handshake + exit ----------
+    // ---------- network flow: ready handshake + exit ----------
 
     @Override
     protected void onReadyPressed() {
@@ -153,7 +153,7 @@ public class NetworkShipPlaceView extends AbstractShipPlaceView {
         netSession.getSession().close();
     }
 
-    // ---------- Networking ----------
+    // ---------- networking ----------
 
     private void handleMessage(NetMessage msg) {
         if (msg == null) return;
@@ -164,8 +164,8 @@ public class NetworkShipPlaceView extends AbstractShipPlaceView {
                     : "Opponent is ready. Deploy your fleet!");
             maybeStartAsHost();
         } else if (msg instanceof NetMessage.Start start) {
-            // Only the client ever receives this (the host sets its own turn locally
-            // in maybeStartAsHost right before sending START).
+            // only the client ever receives this (the host sets its own turn locally
+            // in maybestartashost right before sending start).
             netSession.beginMatch("HOST".equals(start.firstPlayer()));
             goToBattle();
         }

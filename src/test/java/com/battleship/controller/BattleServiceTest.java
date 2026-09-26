@@ -15,10 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Exercises the refactored turn/ammo flow: Turn enum, Player ammo delegates, ShotResolver. */
+/** exercises the refactored turn/ammo flow: turn enum, player ammo delegates, shotresolver. */
 class BattleServiceTest {
 
-    /** Builds a local battle; forces the given player to be on turn (via a harmless miss if not). */
+    /** builds a local battle; forces the given player to be on turn (via a harmless miss if not). */
     private BattleService initFor(Player first, Player p1, Player p2) {
         BattleService service = new BattleService();
         service.init(p1, p2);
@@ -49,11 +49,11 @@ class BattleServiceTest {
 
         assertEquals(1, result.results().size());
         assertEquals(CellStatus.MISS, result.results().get(0).outcome());
-        // Infinite ammo must be untouched (V1: consume via Player delegate).
+        // infinite ammo must be untouched (v1: consume via player delegate).
         assertEquals(Integer.MAX_VALUE, starter.ammoCount(WeaponCatalog.standardShell()));
-        // Launcher resets after each shot (rule 1).
+        // launcher resets after each shot (rule 1).
         assertTrue(starter.selectedWeapon() == WeaponCatalog.standardShell());
-        // Turn advanced.
+        // turn advanced.
         assertNotEquals(starter, service.getCurrentPlayer());
         assertFalse(service.isBattleOver());
     }
@@ -73,17 +73,17 @@ class BattleServiceTest {
         assertEquals(1, result.sunkShips().size());
         assertTrue(p2.isFleetDestroyed());
         assertTrue(service.isBattleOver());
-        // Ammo was consumed through the delegate; launcher reset.
+        // ammo was consumed through the delegate; launcher reset.
         assertEquals(0, p1.ammoCount(WeaponCatalog.nuclearWarhead()));
         assertTrue(p1.selectedWeapon() == WeaponCatalog.standardShell());
-        // Turn stays with the winner so game-over reporting names the right player.
+        // turn stays with the winner so game-over reporting names the right player.
         assertEquals(p1, service.getCurrentPlayer());
     }
 
     @Test
     void playerAmmoDelegatesNeverExposeTheMutableInventory() {
         Player p = freshAdmiral("P", 8);
-        // Encapsulation (V1): only read/delegate access; consume & resupply go through the Player.
+        // encapsulation (v1): only read/delegate access; consume & resupply go through the player.
         assertEquals(1, p.ammoCount(WeaponCatalog.nuclearWarhead()));
         p.consumeAmmo(WeaponCatalog.nuclearWarhead());
         assertFalse(p.hasAmmo(WeaponCatalog.nuclearWarhead()));
@@ -99,7 +99,7 @@ class BattleServiceTest {
 
         com.battleship.model.ShotOrder plan = ai.chooseShotPlan(p.trackingGrid(), p);
 
-        // Planning must never mutate ammo — the AI only reads through delegates (V1).
+        // planning must never mutate ammo — the ai only reads through delegates (v1).
         assertEquals(3, p.ammoCount(WeaponCatalog.salvoBarrage()));
         assertEquals(1, p.ammoCount(WeaponCatalog.nuclearWarhead()));
         assertTrue(plan.weapon() == WeaponCatalog.standardShell()

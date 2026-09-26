@@ -1,7 +1,7 @@
 package com.battleship.model.weapon;
 
 /**
- * Three-cell line salvo that only unlocks on larger battlefields and carries
+ * three-cell line salvo that only unlocks on larger battlefields and carries
  * limited ammunition (3 rounds on a 10x10, 2 on an 8x8, none below).
  */
 public final class SalvoBarrage implements Weapon {

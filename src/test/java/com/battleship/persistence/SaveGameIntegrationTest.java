@@ -23,7 +23,7 @@ class SaveGameIntegrationTest {
         controller.setMode(GameMode.AI_NORMAL);
         controller.setTheater(Theater.FLEET_ACTION);
 
-        // Deploy fleet for player 1 and advance to battle
+        // deploy fleet for player 1 and advance to battle
         controller.autoPlaceRemaining(controller.getPlacingPlayer());
         controller.confirmReady();
 
@@ -39,12 +39,12 @@ class SaveGameIntegrationTest {
         assertEquals(Theater.FLEET_ACTION.getBoardSize(), loaded.getBoardSize());
         assertEquals("BATTLE", loaded.getGameState());
 
-        // Player 1 assertions
+        // player 1 assertions
         assertNotNull(loaded.getPlayer1());
         assertTrue(loaded.getPlayer1().isHuman());
         assertFalse(loaded.getPlayer1().ships().isEmpty());
 
-        // Player 2 assertions (AI)
+        // player 2 assertions (ai)
         assertNotNull(loaded.getPlayer2());
         assertFalse(loaded.getPlayer2().isHuman());
         assertFalse(loaded.getPlayer2().ships().isEmpty());

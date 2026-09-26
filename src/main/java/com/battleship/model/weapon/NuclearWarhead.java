@@ -1,8 +1,8 @@
 package com.battleship.model.weapon;
 
 /**
- * Six-cell area warhead (2x3): one round per battle, available on every
- * battlefield size, and gated behind launch-code authorization in the UI.
+ * six-cell area warhead (2x3): one round per battle, available on every
+ * battlefield size, and gated behind launch-code authorization in the ui.
  */
 public final class NuclearWarhead implements Weapon {
 

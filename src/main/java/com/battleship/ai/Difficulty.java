@@ -1,8 +1,8 @@
 package com.battleship.ai;
 
-/** AI difficulty tiers, mapped to concrete AIStrategy implementations by AIFactory. */
+/** ai difficulty tiers, mapped to concrete aistrategy implementations by aifactory. */
 public enum Difficulty {
-    ENSIGN,     // Easy   -> RandomAI
-    LIEUTENANT, // Normal -> HuntTargetAI
-    ADMIRAL     // Hard   -> SmartAI
+    ENSIGN,     // easy   -> randomai
+    LIEUTENANT, // normal -> hunttargetai
+    ADMIRAL     // hard   -> smartai
 }

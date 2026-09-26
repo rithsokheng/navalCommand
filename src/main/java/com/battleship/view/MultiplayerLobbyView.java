@@ -13,7 +13,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
- * "Play With a Friend" entry point: choose to host a LAN game (shows a QR
+ * "play with a friend" entry point: choose to host a lan game (shows a qr
  * invite code) or join one a friend is hosting.
  */
 public class MultiplayerLobbyView {

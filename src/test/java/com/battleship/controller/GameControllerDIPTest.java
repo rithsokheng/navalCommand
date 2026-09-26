@@ -37,7 +37,7 @@ class GameControllerDIPTest {
         boolean removed = controller.removeShipAt(player, start);
         assertTrue(removed);
 
-        // Verify removing at empty coordinate returns false cleanly without error
+        // verify removing at empty coordinate returns false cleanly without error
         boolean removedAgain = controller.removeShipAt(player, start);
         assertFalse(removedAgain);
     }

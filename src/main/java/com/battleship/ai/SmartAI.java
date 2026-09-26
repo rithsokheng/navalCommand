@@ -18,15 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Admiral (Hard) difficulty: builds a probability density map over unshot
+ * admiral (hard) difficulty: builds a probability density map over unshot
  * cells (how many valid remaining-ship placements would cover each cell)
- * and fires at the highest-probability cell. Falls back to target-following
+ * and fires at the highest-probability cell. falls back to target-following
  * behavior right after a hit, since that's more precise than pure probability
  * once a ship has been found.
  *
- * <p>Fixes V1.3: the density map is built from the {@link TrackingGrid} — the
+ * <p>fixes v1.3: the density map is built from the {@link trackinggrid} — the
  * roster minus announced wrecks — instead of peeking at the defender's live
- * fleet. Uses composition (TargetingQueue) instead of inheriting from HuntTargetAI.</p>
+ * fleet. uses composition (targetingqueue) instead of inheriting from hunttargetai.</p>
  */
 public class SmartAI implements AIStrategy {
 
@@ -38,7 +38,7 @@ public class SmartAI implements AIStrategy {
     public Coordinate chooseTarget(TrackingGrid knowledge) {
         lastBoardSize = knowledge.size();
 
-        // If we're actively finishing off a located ship, defer to the queue.
+        // if we're actively finishing off a located ship, defer to the queue.
         Coordinate queued = targetQueue.nextTarget(knowledge);
         if (queued != null) return queued;
 
@@ -97,7 +97,7 @@ public class SmartAI implements AIStrategy {
         targetQueue.enqueueNeighbors(result.coordinate(), lastBoardSize);
     }
 
-    /** A cell that is known empty (MISS) or confirmed wreckage cannot host a living hull. */
+    /** a cell that is known empty (miss) or confirmed wreckage cannot host a living hull. */
     private boolean fits(TrackingGrid knowledge, int row, int col, int len, Orientation orientation) {
         for (int i = 0; i < len; i++) {
             int r = orientation.isHorizontal() ? row : row + i;
@@ -109,7 +109,7 @@ public class SmartAI implements AIStrategy {
     }
 
     /**
-     * Admiral AI spends its limited-ammo weapons deliberately: it looks for the
+     * admiral ai spends its limited-ammo weapons deliberately: it looks for the
      * blast block containing the most still-unshot cells and only fires it if that
      * block is mostly "fresh" — otherwise it saves the ammo and falls back to a
      * precise single standard shot.
@@ -134,10 +134,10 @@ public class SmartAI implements AIStrategy {
         return new ShotOrder(WeaponCatalog.standard(), chooseTarget(knowledge), Orientation.HORIZONTAL);
     }
 
-    /** Finds the best-scoring placement for an area weapon; null if not worth the ammo. */
+    /** finds the best-scoring placement for an area weapon; null if not worth the ammo. */
     private ShotOrder bestBlock(TrackingGrid knowledge, Weapon weapon) {
         int size = knowledge.size();
-        // Ask the weapon for its own blast geometry (OCP-safe): no hardcoded dims here.
+        // ask the weapon for its own blast geometry (ocp-safe): no hardcoded dims here.
         BlastPattern pattern = weapon.blastPattern();
 
         int bestScore = -1;
@@ -163,7 +163,7 @@ public class SmartAI implements AIStrategy {
         }
 
         int totalCells = pattern.cellCount();
-        // Only worth the ammo if at least half the covered cells are still unshot.
+        // only worth the ammo if at least half the covered cells are still unshot.
         if (bestAnchor == null || bestScore < (totalCells / 2 + 1)) return null;
         return new ShotOrder(weapon, bestAnchor, bestOrientation);
     }

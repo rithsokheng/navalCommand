@@ -10,14 +10,14 @@ import java.nio.file.Path;
 import java.time.Instant;
 
 /**
- * Handles serialization/deserialization of full game state to/from JSON,
- * per the save format in the spec (version, timestamp, boards, turnHistory...).
+ * handles serialization/deserialization of full game state to/from json,
+ * per the save format in the spec (version, timestamp, boards, turnhistory...).
  */
 public class SaveGameService {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    /** Serializes the current game state and writes it to [timestamp]_battleship_save.json */
+    /** serializes the current game state and writes it to [timestamp]_battleship_save.json */
     public Path save(GameSaveDTO saveData, Path directory) throws IOException {
         if (!Files.exists(directory)) {
             Files.createDirectories(directory);
@@ -32,7 +32,7 @@ public class SaveGameService {
         return file;
     }
 
-    /** Parses a save file back into DTOs for GameController reconstruction. */
+    /** parses a save file back into dtos for gamecontroller reconstruction. */
     public GameSaveDTO load(Path file) throws IOException {
         String json = Files.readString(file);
         return gson.fromJson(json, GameSaveDTO.class);

@@ -34,13 +34,13 @@ import javafx.util.Duration;
 import java.util.Map;
 
 /**
- * Battle screen for local play (vs AI or hotseat), rendered from the current
- * admiral's perspective. Extends {@link AbstractBattleView}, so all shared
+ * battle screen for local play (vs ai or hotseat), rendered from the current
+ * admiral's perspective. extends {@link abstractbattleview}, so all shared
  * machinery (weapon console, ghost preview, fire pipeline, exit) is inherited.
  *
- * <p>Strict Fog of War (V1.3 / Smell 5.2): the enemy grid is painted exclusively
- * from the attacker's {@link TrackingGrid}, never from the opponent's private
- * fleet. Enemy status rows report confirmed losses against the known fleet
+ * <p>strict fog of war (v1.3 / smell 5.2): the enemy grid is painted exclusively
+ * from the attacker's {@link trackinggrid}, never from the opponent's private
+ * fleet. enemy status rows report confirmed losses against the known fleet
  * composition instead of cheating on un-sunk damage.</p>
  */
 public class LocalBattleView extends AbstractBattleView {
@@ -66,14 +66,14 @@ public class LocalBattleView extends AbstractBattleView {
         this.perspective = java.util.Objects.requireNonNull(perspective, "BattlePerspective is required.");
     }
 
-    // ---------- Perspective helpers (Strategy Pattern — satisfies OCP) ----------
+    // ---------- perspective helpers (strategy pattern — satisfies ocp) ----------
 
     private String perspectiveName() { return perspective.perspectiveName(); }
     private FleetReadout perspectiveFleet() { return perspective.perspectiveFleet(); }
     private String opponentName() { return perspective.opponentName(); }
     private TrackingGrid opponentKnowledge() { return perspective.opponentKnowledge(); }
 
-    // ---------- AbstractBattleView hooks ----------
+    // ---------- abstractbattleview hooks ----------
 
     @Override
     protected Player firingPlayer() { return controller.getCurrentPlayer(); }
@@ -196,7 +196,7 @@ public class LocalBattleView extends AbstractBattleView {
         return layout;
     }
 
-    /** Weapon bar stacked above the two board cards. */
+    /** weapon bar stacked above the two board cards. */
     private VBox buildLeftColumn() {
         VBox weaponsCard = new VBox(9, launcherBar, orientationLabel);
         weaponsCard.setAlignment(Pos.CENTER);
@@ -213,7 +213,7 @@ public class LocalBattleView extends AbstractBattleView {
         return leftColumn;
     }
 
-    /** Own fleet beside enemy waters, each with its own afloat counter. */
+    /** own fleet beside enemy waters, each with its own afloat counter. */
     private HBox buildBoardsRow() {
         ownShipsLeftLabel = new Label();
         ownShipsLeftLabel.getStyleClass().add("ships-left-badge");
@@ -251,11 +251,11 @@ public class LocalBattleView extends AbstractBattleView {
         if (width <= 0 || height <= 0 || ownGrid == null || enemyGrid == null) return;
         int size = ownGrid.getSize();
 
-        // Vertical budget: window minus command bar (~55), weapons card (~65),
-        // card chrome (title ~30, padding ~36, spacing ~14), VBox gaps (12+12),
+        // vertical budget: window minus command bar (~55), weapons card (~65),
+        // card chrome (title ~30, padding ~36, spacing ~14), vbox gaps (12+12),
         // layout padding (32) ≈ 250px total overhead.
         double availH = height - 250;
-        // Horizontal budget per board: window minus sidePanel (240), HBox gaps (20+24),
+        // horizontal budget per board: window minus sidepanel (240), hbox gaps (20+24),
         // layout padding (40), card padding (36 each = 72) ≈ 420px total overhead.
         double availW = (width - 420) / 2.0;
 
@@ -263,7 +263,7 @@ public class LocalBattleView extends AbstractBattleView {
         maxGridPx = Math.max(260.0, Math.min(maxGridPx, 760.0));
 
         double newCellPx = Math.floor(maxGridPx / size);
-        // Allow cells to grow up to 120px so 5x5 boards on fullscreen are prominent and fill space
+        // allow cells to grow up to 120px so 5x5 boards on fullscreen are prominent and fill space
         newCellPx = Math.min(newCellPx, 120.0);
         ownGrid.setCellSize(newCellPx);
         enemyGrid.setCellSize(newCellPx);
@@ -283,7 +283,7 @@ public class LocalBattleView extends AbstractBattleView {
         }
     }
 
-    // ---------- Firing (local + AI) ----------
+    // ---------- firing (local + ai) ----------
 
     @Override
     protected void resolveShot(Coordinate anchor) {
@@ -300,7 +300,7 @@ public class LocalBattleView extends AbstractBattleView {
             return;
         }
 
-        // Only start the resupply countdown if the battle is still running.
+        // only start the resupply countdown if the battle is still running.
         maybeTriggerNuclearResupply(attacker, hadNuclearAmmo);
 
         if (controller.getSelectedMode() == GameMode.HOTSEAT) {
@@ -364,7 +364,7 @@ public class LocalBattleView extends AbstractBattleView {
         refreshShipsLeftLabels();
     }
 
-    // ---------- Local chrome: command bar / side console ----------
+    // ---------- local chrome: command bar / side console ----------
 
     private HBox buildCommandBar(String currentName, String opponentName) {
         turnLabel = new Label();
@@ -444,7 +444,7 @@ public class LocalBattleView extends AbstractBattleView {
         enemyShipsLeftLabel.setText(enemyLeft + "/" + enemyTotal + " REMAINING");
     }
 
-    // ---------- Side console (fleet status + attack log) ----------
+    // ---------- side console (fleet status + attack log) ----------
 
     private VBox buildSidePanel() {
         VBox side = new VBox(12, buildRadarCard(), buildFleetStatusCard(), buildAttackLogCard());
@@ -455,7 +455,7 @@ public class LocalBattleView extends AbstractBattleView {
         return side;
     }
 
-    /** Decorative radar sweep. */
+    /** decorative radar sweep. */
     private VBox buildRadarCard() {
         StackPane radar = DecorUtil.animatedRadarSweep(130);
         VBox radarCard = new VBox(radar);
@@ -464,7 +464,7 @@ public class LocalBattleView extends AbstractBattleView {
         return radarCard;
     }
 
-    /** Fleet composition and confirmed losses for the enemy fleet (Fog of War safe). */
+    /** fleet composition and confirmed losses for the enemy fleet (fog of war safe). */
     private VBox buildFleetStatusCard() {
         Label fleetTitle = new Label("ENEMY FLEET STATUS");
         fleetTitle.getStyleClass().add("side-card-title");
@@ -474,7 +474,7 @@ public class LocalBattleView extends AbstractBattleView {
         return fleetCard;
     }
 
-    /** Scrolling, newest-first attack log. */
+    /** scrolling, newest-first attack log. */
     private VBox buildAttackLogCard() {
         return battleLog.node();
     }
@@ -547,14 +547,14 @@ public class LocalBattleView extends AbstractBattleView {
     }
 
     /**
-     * If this shot just consumed the player's last Nuclear round, start the 30s
+     * if this shot just consumed the player's last nuclear round, start the 30s
      * auto-resupply countdown (quiz-gated) and top the stock back up on success.
      */
     private void maybeTriggerNuclearResupply(Player player, boolean hadNuclearAmmoBefore) {
         Weapon nuclear = WeaponCatalog.nuclearWarhead();
         if (hadNuclearAmmoBefore && !player.hasAmmo(nuclear)) {
             NuclearResupplyDialog.show(nav.getStage(), () -> {
-                // Fix 2/F7: resupply goes through the controller-owned service, never the raw Player.
+                // fix 2/f7: resupply goes through the controller-owned service, never the raw player.
                 controller.resupplyNuclearAmmo(player);
                 refreshLauncherBar();
             });

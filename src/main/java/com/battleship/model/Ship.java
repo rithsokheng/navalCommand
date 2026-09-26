@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A placed ship: tracks its occupied coordinates and hit state.
+ * a placed ship: tracks its occupied coordinates and hit state.
  *
- * <p><strong>Package-private on purpose.</strong> Fixes V1.2 — the hull used to be
- * public and was handed to views and AI through {@code ReadOnlyBoard.getShips()},
- * letting any caller run {@code registerHit(...)} and corrupt the defender's
- * fleet. Outside this package a ship is only ever seen as a {@link ShipSnapshot}.</p>
+ * <p><strong>package-private on purpose.</strong> fixes v1.2 — the hull used to be
+ * public and was handed to views and ai through {@code readonlyboard.getships()},
+ * letting any caller run {@code registerhit(...)} and corrupt the defender's
+ * fleet. outside this package a ship is only ever seen as a {@link shipsnapshot}.</p>
  */
 final class Ship {
 
@@ -33,7 +33,7 @@ final class Ship {
         this.orientation = orientation;
     }
 
-    /** Registers a hit at the given coordinate if it belongs to this ship. Idempotent. */
+    /** registers a hit at the given coordinate if it belongs to this ship. idempotent. */
     boolean registerHit(Coordinate c) {
         if (occupiedCells.contains(c)) {
             hitCells.add(c);
@@ -46,7 +46,7 @@ final class Ship {
         return hitCells.size() >= type.getSize();
     }
 
-    /** Immutable projection of this hull, safe to hand outside the domain. */
+    /** immutable projection of this hull, safe to hand outside the domain. */
     ShipSnapshot snapshot() {
         return new ShipSnapshot(type, occupiedCells, orientation, hitCells.size(), isSunk());
     }

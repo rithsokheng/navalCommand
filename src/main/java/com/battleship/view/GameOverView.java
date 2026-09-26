@@ -24,9 +24,9 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
- * Reveals both boards fully. Sunk ships use renderSunkShip()
+ * reveals both boards fully. sunk ships use rendersunkship()
  * (all cells recolored); surviving ships use the normal ship render.
- * Restyled to match the "Fleet Command" theme: full-bleed sea backdrop
+ * restyled to match the "fleet command" theme: full-bleed sea backdrop
  * (gold-tinted for a win, storm-tinted for a loss), board-card framed
  * reveal boards, and a pill-style stat readout.
  */
@@ -105,7 +105,7 @@ public class GameOverView {
         javafx.scene.canvas.Canvas ocean = DecorUtil.animatedOceanScene(root, 0.0);
         root.getChildren().add(ocean);
 
-        // A soft mood wash over the sea: warm gold for a win, cool red for a loss.
+        // a soft mood wash over the sea: warm gold for a win, cool red for a loss.
         Region mood = new Region();
         mood.getStyleClass().add(playerWon ? "mood-wash-win" : "mood-wash-loss");
         mood.setMouseTransparent(true);

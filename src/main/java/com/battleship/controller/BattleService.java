@@ -15,39 +15,39 @@ import com.battleship.model.weapon.Weapon;
 import java.security.SecureRandom;
 
 /**
- * Encapsulates turn management, weapon selection and the firing pipeline.
- * Extracted from GameController so the controller can stay a thin mediator (SRP).
+ * encapsulates turn management, weapon selection and the firing pipeline.
+ * extracted from gamecontroller so the controller can stay a thin mediator (srp).
  *
- * <p>Two architectural fixes:</p>
+ * <p>two architectural fixes:</p>
  * <ul>
- *   <li>The AI branch {@code if (aiStrategy != null && attacker == player2)} is gone:
- *       whoever holds the turn is asked for a {@link ShotOrder} through the
- *       polymorphic {@link Player#decideAutonomousShot()} (V2.2).</li>
- *   <li>Every shot updates the <em>shooter's</em> {@link TrackingGrid} — the only
+ *   <li>the ai branch {@code if (aistrategy != null && attacker == player2)} is gone:
+ *       whoever holds the turn is asked for a {@link shotorder} through the
+ *       polymorphic {@link player#decideautonomousshot()} (v2.2).</li>
+ *   <li>every shot updates the <em>shooter's</em> {@link trackinggrid} — the only
  *       fog-of-war model in the game — instead of the shooter reading the
- *       defender's grid (V1.3 / Smell 5.2).</li>
+ *       defender's grid (v1.3 / smell 5.2).</li>
  * </ul>
  */
 public class BattleService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    /** Shot-resolution strategy, injectable for tests (fixes F5). */
+    /** shot-resolution strategy, injectable for tests (fixes f5). */
     private final ShotResolution shotResolution;
 
     private Player player1;
     private Player player2;
     private Turn currentTurn;
 
-    /** True only between a fire() that ended the match and the controller reacting to it. */
+    /** true only between a fire() that ended the match and the controller reacting to it. */
     private boolean battleOver;
 
-    /** Production constructor — uses the standard shot resolver. */
+    /** production constructor — uses the standard shot resolver. */
     public BattleService() {
         this(ShotResolver.STANDARD);
     }
 
-    /** Testable constructor — inject the shot-resolution strategy (DIP, fixes F5). */
+    /** testable constructor — inject the shot-resolution strategy (dip, fixes f5). */
     public BattleService(ShotResolution shotResolution) {
         this.shotResolution = shotResolution;
     }
@@ -59,7 +59,7 @@ public class BattleService {
         this.battleOver = false;
     }
 
-    /** Cryptographically fair coin flip determines who fires first. */
+    /** cryptographically fair coin flip determines who fires first. */
     public Player rollInitiative() {
         currentTurn = RANDOM.nextBoolean() ? Turn.PLAYER_1 : Turn.PLAYER_2;
         return getCurrentPlayer();
@@ -68,7 +68,7 @@ public class BattleService {
     public Player getCurrentPlayer() { return currentTurn == Turn.PLAYER_1 ? player1 : player2; }
     public Player getOpponent() { return currentTurn == Turn.PLAYER_1 ? player2 : player1; }
 
-    /** True when the player holding the turn acts on its own (no UI click expected). */
+    /** true when the player holding the turn acts on its own (no ui click expected). */
     public boolean isAiTurn() {
         return getCurrentPlayer().isAutonomous();
     }
@@ -86,8 +86,8 @@ public class BattleService {
     }
 
     /**
-     * Fires the current player's selected weapon, anchored at the given cell.
-     * The pattern resolution is delegated to the shared {@link ShotResolver};
+     * fires the current player's selected weapon, anchored at the given cell.
+     * the pattern resolution is delegated to the shared {@link shotresolver};
      * this method owns only the turn-level concerns: knowledge bookkeeping,
      * ammo consumption, weapon reset, shooter feedback and turn advancement
      * (unless the defender just lost).
@@ -116,7 +116,7 @@ public class BattleService {
         return result;
     }
 
-    /** Has the current player choose a weapon + target on its own, then fires it. */
+    /** has the current player choose a weapon + target on its own, then fires it. */
     public LauncherFireResult fireAiLauncher() {
         Player attacker = getCurrentPlayer();
         ShotOrder order = attacker.decideAutonomousShot().orElseThrow(() ->
@@ -125,7 +125,7 @@ public class BattleService {
         return fire(order.anchor());
     }
 
-    /** Copies everything the shooter just observed into their own knowledge grid. */
+    /** copies everything the shooter just observed into their own knowledge grid. */
     private void recordObservedOutcome(Player attacker, LauncherFireResult result) {
         TrackingGrid knowledge = attacker.trackingGrid();
         for (ShotResult shot : result.results()) {

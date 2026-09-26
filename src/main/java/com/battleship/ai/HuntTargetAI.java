@@ -11,9 +11,9 @@ import com.battleship.model.weapon.WeaponCatalog;
 import java.security.SecureRandom;
 
 /**
- * Lieutenant (Normal) difficulty: HUNT/TARGET state machine.
- * HUNT  -> checkerboard-parity random search (exploits min ship size = 2).
- * TARGET -> on hit, queue orthogonal neighbors and follow the line.
+ * lieutenant (normal) difficulty: hunt/target state machine.
+ * hunt  -> checkerboard-parity random search (exploits min ship size = 2).
+ * target -> on hit, queue orthogonal neighbors and follow the line.
  */
 public class HuntTargetAI implements AIStrategy {
 
@@ -25,11 +25,11 @@ public class HuntTargetAI implements AIStrategy {
     public Coordinate chooseTarget(TrackingGrid knowledge) {
         lastBoardSize = knowledge.size();
 
-        // TARGET mode: drain queue, skip any coordinate already shot at.
+        // target mode: drain queue, skip any coordinate already shot at.
         Coordinate queued = targetQueue.nextTarget(knowledge);
         if (queued != null) return queued;
 
-        // HUNT mode: checkerboard parity over unshot cells (shared heuristic, DRY).
+        // hunt mode: checkerboard parity over unshot cells (shared heuristic, dry).
         return ParityHunter.pick(knowledge, random);
     }
 
@@ -44,8 +44,8 @@ public class HuntTargetAI implements AIStrategy {
     }
 
     /**
-     * Normal AI stays precise once it has a lead (TARGET mode -> standard shots),
-     * but while blind-searching (HUNT mode) it occasionally spends salvo ammo to
+     * normal ai stays precise once it has a lead (target mode -> standard shots),
+     * but while blind-searching (hunt mode) it occasionally spends salvo ammo to
      * cover 3 cells at once instead of 1.
      */
     @Override
@@ -53,7 +53,7 @@ public class HuntTargetAI implements AIStrategy {
         var salvo = WeaponCatalog.salvo();
         boolean hunting = !targetQueue.hasTargets();
         if (hunting && ammo.hasAmmo(salvo) && !ammo.isAmmoInfinite(salvo) && random.nextInt(4) == 0) {
-            // Same shared HUNT heuristic as chooseTarget — no duplicated parity block.
+            // same shared hunt heuristic as choosetarget — no duplicated parity block.
             Coordinate anchor = ParityHunter.pick(knowledge, random);
             return new ShotOrder(salvo, anchor, Orientation.random(random));
         }

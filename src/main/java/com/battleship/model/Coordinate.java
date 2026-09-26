@@ -1,13 +1,13 @@
 package com.battleship.model;
 
 /**
- * Immutable algebraic coordinate (e.g. "B5") on a dynamically sized board.
- * A record: compile-time immutability, plus generated equals/hashCode/toString.
- * The algebraic {@link #toString()} is kept for readable logs and messages.
+ * immutable algebraic coordinate (e.g. "b5") on a dynamically sized board.
+ * a record: compile-time immutability, plus generated equals/hashcode/tostring.
+ * the algebraic {@link #tostring()} is kept for readable logs and messages.
  */
 public record Coordinate(int row, int col) {
 
-    /** Parses algebraic notation like "A1" or "J10" into a Coordinate (0-indexed internally). */
+    /** parses algebraic notation like "a1" or "j10" into a coordinate (0-indexed internally). */
     public static Coordinate fromAlgebraic(String notation) {
         char letter = Character.toUpperCase(notation.charAt(0));
         int col = letter - 'A';
@@ -15,7 +15,7 @@ public record Coordinate(int row, int col) {
         return new Coordinate(row, col);
     }
 
-    /** Backward-compatible accessors (records expose row()/col(); these aliases keep call sites stable). */
+    /** backward-compatible accessors (records expose row()/col(); these aliases keep call sites stable). */
     public int getRow() { return row; }
     public int getCol() { return col; }
 

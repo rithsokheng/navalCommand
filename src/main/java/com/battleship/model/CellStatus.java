@@ -1,6 +1,6 @@
 package com.battleship.model;
 
-/** State of a single grid cell. */
+/** state of a single grid cell. */
 public enum CellStatus {
     EMPTY,
     SHIP,

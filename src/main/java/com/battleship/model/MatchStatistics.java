@@ -3,7 +3,7 @@ package com.battleship.model;
 import com.battleship.model.projection.ShipSnapshot;
 
 /**
- * Immutable domain value object holding end-of-game statistics calculated from a fleet.
+ * immutable domain value object holding end-of-game statistics calculated from a fleet.
  */
 public record MatchStatistics(int totalShots, int hits, int misses, double accuracy, long shipsSunk) {
 

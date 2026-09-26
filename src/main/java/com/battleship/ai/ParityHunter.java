@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Stateless HUNT-mode searcher: picks a random unshot cell using checkerboard
+ * stateless hunt-mode searcher: picks a random unshot cell using checkerboard
  * parity — exploiting the fact that the smallest ship occupies 2 cells, so at
  * least one cell of every ship lies on a (row + col)-even square.
  *
- * <p>Shared by {@link HuntTargetAI} and {@link SmartAI} so the search heuristic
- * lives in exactly one place. Reads the {@link TrackingGrid} (knowledge), not the
+ * <p>shared by {@link hunttargetai} and {@link smartai} so the search heuristic
+ * lives in exactly one place. reads the {@link trackinggrid} (knowledge), not the
  * enemy's real grid.</p>
  */
 public final class ParityHunter {
@@ -21,7 +21,7 @@ public final class ParityHunter {
     private ParityHunter() { }
 
     /**
-     * Picks a random cell to hunt on, preferring even (row + col) parity.
+     * picks a random cell to hunt on, preferring even (row + col) parity.
      *
      * @param knowledge the attacker's knowledge of the defender's waters
      * @param random    the strategy's randomness source

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Translates domain player and game state models into persistent DTO hierarchies (SRP).
+ * translates domain player and game state models into persistent dto hierarchies (srp).
  */
 public final class GameSaveMapper {
 

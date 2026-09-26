@@ -39,7 +39,7 @@ class NetworkSessionIntegrationTest {
         AtomicReference<NetMessage> clientReceivedMsg = new AtomicReference<>();
         AtomicReference<NetMessage> clientFireResultMsg = new AtomicReference<>();
 
-        // 1. Start Host
+        // 1. start host
         hostSession = NetworkSession.host(
                 port,
                 session -> {
@@ -52,7 +52,7 @@ class NetworkSessionIntegrationTest {
                 directExecutor
         );
 
-        // 2. Connect Client
+        // 2. connect client
         NetworkSession.connect(
                 "127.0.0.1",
                 port,
@@ -76,19 +76,19 @@ class NetworkSessionIntegrationTest {
         assertTrue(clientConnectedLatch.await(5, TimeUnit.SECONDS), "Client failed to connect within timeout");
         assertNotNull(clientSession);
 
-        // 3. Client sends HELLO
+        // 3. client sends hello
         clientSession.send(new NetMessage.Hello("4821"));
         assertTrue(hostReceivedHelloLatch.await(5, TimeUnit.SECONDS), "Host failed to receive HELLO");
         assertInstanceOf(NetMessage.Hello.class, hostReceivedMsg.get());
         assertEquals("4821", ((NetMessage.Hello) hostReceivedMsg.get()).code());
 
-        // 4. Host sends WELCOME
+        // 4. host sends welcome
         hostSession.send(new NetMessage.Welcome("SKIRMISH"));
         assertTrue(clientReceivedWelcomeLatch.await(5, TimeUnit.SECONDS), "Client failed to receive WELCOME");
         assertInstanceOf(NetMessage.Welcome.class, clientReceivedMsg.get());
         assertEquals("SKIRMISH", ((NetMessage.Welcome) clientReceivedMsg.get()).theater());
 
-        // 5. Host sends FIRE_RESULT
+        // 5. host sends fire_result
         NetMessage.FireResult fr = new NetMessage.FireResult(
                 List.of(new NetMessage.CellResult(new Coordinate(0, 0), CellStatus.HIT)),
                 List.of(),

@@ -3,9 +3,9 @@ package com.battleship.model;
 import java.util.Map;
 
 /**
- * A person at the keyboard (or two, in hotseat). Supplies shots through the UI
- * and learns nothing automatically — see {@link Player#decideAutonomousShot()}
- * and {@link Player#observeOwnShot(ShotResult)}, whose default implementations
+ * a person at the keyboard (or two, in hotseat). supplies shots through the ui
+ * and learns nothing automatically — see {@link player#decideautonomousshot()}
+ * and {@link player#observeownshot(shotresult)}, whose default implementations
  * are exactly this class's behaviour.
  */
 public final class HumanPlayer extends Player {
@@ -14,7 +14,7 @@ public final class HumanPlayer extends Player {
         super(name, boardSize, enemyFleetComposition);
     }
 
-    /** Convenience for the standard match flow: board size and roster come from the theater. */
+    /** convenience for the standard match flow: board size and roster come from the theater. */
     public HumanPlayer(String name, Theater theater) {
         this(name, theater.getBoardSize(), theater.getFleetComposition());
     }

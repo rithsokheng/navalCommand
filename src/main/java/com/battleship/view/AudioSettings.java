@@ -1,8 +1,8 @@
 package com.battleship.view;
 
 /**
- * Volume and mute control (options screen). Split out of {@link GameAudio} so a
- * settings screen can depend on just this slice (ISP).
+ * volume and mute control (options screen). split out of {@link gameaudio} so a
+ * settings screen can depend on just this slice (isp).
  */
 public interface AudioSettings {
 

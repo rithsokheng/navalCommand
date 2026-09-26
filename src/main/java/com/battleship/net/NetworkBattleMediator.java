@@ -17,27 +17,27 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Encapsulates the controller-level logic for a network battle (fixes V7 / SRP),
- * keeping the View free from DTO construction and network I/O.
+ * encapsulates the controller-level logic for a network battle (fixes v7 / srp),
+ * keeping the view free from dto construction and network i/o.
  *
- * <p>Enemy knowledge is recorded into the local player's {@link TrackingGrid}
- * (Smell 5.2), and shots are resolved through the shared {@link ShotResolution}
- * against the local player's {@link com.battleship.model.ShotTarget} surface
- * (V1.1).</p>
+ * <p>enemy knowledge is recorded into the local player's {@link trackinggrid}
+ * (smell 5.2), and shots are resolved through the shared {@link shotresolution}
+ * against the local player's {@link com.battleship.model.shottarget} surface
+ * (v1.1).</p>
  */
 public class NetworkBattleMediator {
 
     private final NetworkGameSession session;
     private final Player me;
-    /** Shot-resolution strategy, injectable for tests (fixes F5). */
+    /** shot-resolution strategy, injectable for tests (fixes f5). */
     private final ShotResolution shotResolution;
 
-    /** Production constructor — uses the standard shot resolver. */
+    /** production constructor — uses the standard shot resolver. */
     public NetworkBattleMediator(NetworkGameSession session) {
         this(session, ShotResolver.STANDARD);
     }
 
-    /** Testable constructor — inject the shot-resolution strategy (DIP, fixes F5). */
+    /** testable constructor — inject the shot-resolution strategy (dip, fixes f5). */
     public NetworkBattleMediator(NetworkGameSession session, ShotResolution shotResolution) {
         this.session = session;
         this.me = session.getMe();
@@ -51,13 +51,13 @@ public class NetworkBattleMediator {
             boolean anySunk) {}
 
     /**
-     * Resolves an incoming shot against the local fleet, formats and dispatches
-     * the FireResult reply message across the network session, and returns the outcome.
+     * resolves an incoming shot against the local fleet, formats and dispatches
+     * the fireresult reply message across the network session, and returns the outcome.
      */
     public IncomingFireOutcome resolveAndReply(NetMessage.Fire fire) {
         Optional<Weapon> weapon = WeaponCatalog.byId(fire.weaponId());
         if (weapon.isEmpty()) {
-            // Unknown weapon id (e.g. a peer running a newer plugin set): reply with
+            // unknown weapon id (e.g. a peer running a newer plugin set): reply with
             // an empty, harmless result rather than corrupting the local fleet.
             LauncherFireResult empty = new LauncherFireResult(List.of(), List.of());
             if (session.getSession() != null) {
@@ -89,7 +89,7 @@ public class NetworkBattleMediator {
     }
 
     /**
-     * Records the defender's report of my own shot in my tracking grid: this is the
+     * records the defender's report of my own shot in my tracking grid: this is the
      * only way a network admiral ever learns anything (true fog of war).
      */
     public void recordObservedResult(NetMessage.FireResult result) {

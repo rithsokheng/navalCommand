@@ -1,6 +1,6 @@
 package com.battleship.model;
 
-/** Ship classes with their fixed length in cells. */
+/** ship classes with their fixed length in cells. */
 public enum ShipType {
     PATROL_BOAT(2, "destroyer"),
     DESTROYER(2, "destroyer"),

@@ -22,14 +22,14 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
- * ISSUE 4 + 5: local (vs AI / hotseat) ship-placement screen.
- * Left = dock, center = board card, right = status panel,
- * bottom = ROTATE / AUTO PLACE / RESET.
+ * issue 4 + 5: local (vs ai / hotseat) ship-placement screen.
+ * left = dock, center = board card, right = status panel,
+ * bottom = rotate / auto place / reset.
  *
- * <p>Extends {@link AbstractShipPlaceView}, so the dock, drag-and-drop,
- * ghost preview, orientation handling, counter and READY gating are all
- * inherited. This class contributes only the local chrome (ocean backdrop,
- * entrance animation, rotate hint) and the local READY/exit behaviour.</p>
+ * <p>extends {@link abstractshipplaceview}, so the dock, drag-and-drop,
+ * ghost preview, orientation handling, counter and ready gating are all
+ * inherited. this class contributes only the local chrome (ocean backdrop,
+ * entrance animation, rotate hint) and the local ready/exit behaviour.</p>
  */
 public class ShipPlaceView extends AbstractShipPlaceView {
 
@@ -134,7 +134,7 @@ public class ShipPlaceView extends AbstractShipPlaceView {
         root.getChildren().add(ocean);
         root.getChildren().add(layout);
 
-        // Same gentle entrance used on the mode-select screen, so navigating
+        // same gentle entrance used on the mode-select screen, so navigating
         // into placement feels continuous rather than an abrupt cut.
         layout.setOpacity(0.0);
         layout.setTranslateY(16);
@@ -149,7 +149,7 @@ public class ShipPlaceView extends AbstractShipPlaceView {
         return root;
     }
 
-    // ---------- Local flow: READY + exit ----------
+    // ---------- local flow: ready + exit ----------
 
     @Override
     protected void onReadyPressed() {
@@ -164,12 +164,12 @@ public class ShipPlaceView extends AbstractShipPlaceView {
 
     @Override
     protected void onExitConfirmed() {
-        // Nothing extra for a local match; the base silences BGM and returns to the menu.
+        // nothing extra for a local match; the base silences bgm and returns to the menu.
     }
 
-    // ---------- Local chrome ----------
+    // ---------- local chrome ----------
 
-    /** Wraps the board grid in the same "board-card" chrome used on the battle screen. */
+    /** wraps the board grid in the same "board-card" chrome used on the battle screen. */
     private VBox buildBoardCard() {
         Label heading = new Label("YOUR WATERS");
         heading.getStyleClass().addAll("board-card-title", "board-card-title-lg");

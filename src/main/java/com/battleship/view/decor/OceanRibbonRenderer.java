@@ -6,15 +6,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * A wide, very faint ribbon of drifting sine-wave "ocean" lines meant to sit
- * behind menu content (add as the FIRST child of a StackPane). One visual
- * effect, one class (SRP — extracted from the former DecorUtil God object).
+ * a wide, very faint ribbon of drifting sine-wave "ocean" lines meant to sit
+ * behind menu content (add as the first child of a stackpane). one visual
+ * effect, one class (srp — extracted from the former decorutil god object).
  */
 public final class OceanRibbonRenderer {
 
     private OceanRibbonRenderer() { }
 
-    /** Builds the ribbon canvas; purely decorative and mouse-transparent. */
+    /** builds the ribbon canvas; purely decorative and mouse-transparent. */
     public static Canvas animatedOceanRibbon(double width, double height) {
         Canvas canvas = new Canvas(width, height);
         canvas.setMouseTransparent(true);

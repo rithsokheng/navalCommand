@@ -16,9 +16,9 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
- * Shown right after clicking PLAY. Three command cards — VS AI, HOTSEAT,
- * ONLINE — matching the "Select Mode" mockup. Stores the selection in
- * GameController before moving to board select.
+ * shown right after clicking play. three command cards — vs ai, hotseat,
+ * online — matching the "select mode" mockup. stores the selection in
+ * gamecontroller before moving to board select.
  */
 public class GameModeSelectView {
 
@@ -64,7 +64,7 @@ public class GameModeSelectView {
         }
         root.getChildren().add(layout);
 
-        // Same gentle entrance used on the main menu, so navigating between
+        // same gentle entrance used on the main menu, so navigating between
         // screens feels continuous rather than an abrupt cut.
         layout.setOpacity(0.0);
         layout.setTranslateY(16);
@@ -84,7 +84,7 @@ public class GameModeSelectView {
         nav.showBoardSelect();
     }
 
-    // ---------- VS AI card ----------
+    // ---------- vs ai card ----------
 
     private VBox aiCard() {
         Label heading = new Label("VS AI");
@@ -108,7 +108,7 @@ public class GameModeSelectView {
         return card(heading, badge, icon, difficulties, "mode-card-ai");
     }
 
-    // ---------- Hotseat card ----------
+    // ---------- hotseat card ----------
 
     private VBox hotseatCard() {
         Label heading = new Label("HOTSEAT");
@@ -154,7 +154,7 @@ public class GameModeSelectView {
         return card;
     }
 
-    // ---------- Online card (real LAN + QR feature, styled as the third card) ----------
+    // ---------- online card (real lan + qr feature, styled as the third card) ----------
 
     private VBox onlineCard() {
         Label heading = new Label("ONLINE");
@@ -221,7 +221,7 @@ public class GameModeSelectView {
         box.getStyleClass().addAll("card-panel", "mode-card", accentClass);
         box.setCursor(javafx.scene.Cursor.HAND);
 
-        // A small lift + scale on hover so the cards feel tactile, matching
+        // a small lift + scale on hover so the cards feel tactile, matching
         // the button hover treatment used across the rest of the app.
         box.setOnMouseEntered(e -> { box.setScaleX(1.03); box.setScaleY(1.03); box.setTranslateY(-4); });
         box.setOnMouseExited(e -> { box.setScaleX(1.0); box.setScaleY(1.0); box.setTranslateY(0); });

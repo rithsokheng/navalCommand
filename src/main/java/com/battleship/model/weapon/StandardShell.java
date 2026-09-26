@@ -1,7 +1,7 @@
 package com.battleship.model.weapon;
 
 /**
- * Infinite single-cell artillery — the weapon every admiral always has.
+ * infinite single-cell artillery — the weapon every admiral always has.
  */
 public final class StandardShell implements Weapon {
 

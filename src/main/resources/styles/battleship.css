@@ -1,8 +1,8 @@
 /* ============================================================
-   Battleship: FLEET COMMAND — theme stylesheet
-   Deep navy command-center palette, cyan accent, gold highlight.
-   Applies automatically to whatever screen is the Scene root
-   (JavaFX tags the scene root with the ".root" style class).
+   battleship: fleet command — theme stylesheet
+   deep navy command-center palette, cyan accent, gold highlight.
+   applies automatically to whatever screen is the scene root
+   (javafx tags the scene root with the ".root" style class).
    ============================================================ */
 
 .root {
@@ -11,7 +11,7 @@
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
-/* ---------- Typography ---------- */
+/* ---------- typography ---------- */
 
 .app-title {
     -fx-letter-spacing: 1.5px;
@@ -57,7 +57,7 @@
     -fx-font-weight: bold;
 }
 
-/* ---------- Buttons ---------- */
+/* ---------- buttons ---------- */
 
 .primary-button {
     -fx-letter-spacing: 1px;
@@ -86,7 +86,7 @@
     -fx-effect: none;
 }
 
-/* PLAY — the one button that should visually win the screen: warm gold
+/* play — the one button that should visually win the screen: warm gold
    accent on the same navy-blue body, slightly taller glow, subtle pulse
    via the hover/press states below. */
 .featured-button {
@@ -146,7 +146,7 @@
     -fx-effect: dropshadow(gaussian, rgba(255,92,92,0.3), 14, 0.2, 0, 0);
 }
 
-/* ---------- Panels / cards ---------- */
+/* ---------- panels / cards ---------- */
 
 .card-panel {
     -fx-background-color: linear-gradient(to bottom, rgba(22,49,74,0.72), rgba(11,27,44,0.85));
@@ -177,7 +177,7 @@
     -fx-effect: dropshadow(gaussian, rgba(255,209,102,0.4), 22, 0.3, 0, 0);
 }
 
-/* ---------- Form controls ---------- */
+/* ---------- form controls ---------- */
 
 .dark-field {
     -fx-background-color: rgba(10,25,40,0.7);
@@ -193,7 +193,7 @@
     -fx-effect: dropshadow(gaussian, rgba(68,184,255,0.3), 10, 0.2, 0, 0);
 }
 
-/* ---------- Weapon / launcher bar ---------- */
+/* ---------- weapon / launcher bar ---------- */
 
 .weapon-console-card {
     -fx-background-color: linear-gradient(to bottom, rgba(20,46,72,0.85), rgba(11,26,42,0.95));
@@ -222,7 +222,7 @@
     -fx-effect: dropshadow(gaussian, rgba(68,184,255,0.4), 10, 0.2, 0, 0);
 }
 
-/* ---------- Misc ---------- */
+/* ---------- misc ---------- */
 
 .scroll-bar {
     -fx-background-color: transparent;
@@ -239,7 +239,7 @@
 .cell-miss { -fx-fill: #f5f7fa; }
 .cell-ship { -fx-fill: #2e6690; }
 
-/* ---------- Modal overlays (How To Play / Options) ---------- */
+/* ---------- modal overlays (how to play / options) ---------- */
 
 .overlay-backdrop {
     -fx-background-color: rgba(3,10,18,0.78);
@@ -330,7 +330,7 @@
     -fx-max-height: 1;
 }
 
-/* Segmented toggle group (Resolution / UI Scale / Animations rows) */
+/* segmented toggle group (resolution / ui scale / animations rows) */
 .segmented-toggle {
     -fx-background-color: rgba(10,25,40,0.7);
     -fx-text-fill: #c7d9e8;
@@ -352,7 +352,7 @@
     -fx-border-color: #63c4ff;
 }
 
-/* Sliders (Master Volume / SFX Volume) */
+/* sliders (master volume / sfx volume) */
 .themed-slider .track {
     -fx-background-color: rgba(255,255,255,0.08);
     -fx-background-radius: 4;
@@ -367,7 +367,7 @@
     -fx-background-color: #63c4ff;
 }
 
-/* Mute-all switch (rendered as a small toggle button pill) */
+/* mute-all switch (rendered as a small toggle button pill) */
 .switch-toggle {
     -fx-background-color: rgba(10,25,40,0.7);
     -fx-border-color: #2e5d87;
@@ -400,7 +400,7 @@
     -fx-alignment: center;
 }
 
-/* ---------- Mode-select cards ---------- */
+/* ---------- mode-select cards ---------- */
 
 .mode-card-title {
     -fx-letter-spacing: 1px;
@@ -426,7 +426,7 @@
     -fx-opacity: 0.55;
 }
 
-/* Bigger, punchier variant used on the Select Game Mode screen. Each mode
+/* bigger, punchier variant used on the select game mode screen. each mode
    gets its own accent color so the three cards read as distinct choices
    rather than three identical boxes. */
 .mode-card {
@@ -501,7 +501,7 @@
     -fx-border-color: rgba(255,209,102,0.4);
 }
 
-/* ---------- Battlefield-select mini grid previews ---------- */
+/* ---------- battlefield-select mini grid previews ---------- */
 
 .board-preview-frame {
     -fx-background-color: rgba(4,14,26,0.55);
@@ -521,8 +521,8 @@
 }
 
 /* ============================================================
-   BATTLE SCREEN — "Fleet Command" styling
-   Naval command-center look: deep navy panels, cyan accent,
+   battle screen — "fleet command" styling
+   naval command-center look: deep navy panels, cyan accent,
    gold highlight, red danger, green success.
    ============================================================ */
 
@@ -680,8 +680,8 @@
 }
 
 /* ============================================================
-   Board cells (BoardGridPane)
-   Cell state is applied as a style CLASS, never as inline CSS.
+   board cells (boardgridpane)
+   cell state is applied as a style class, never as inline css.
    ============================================================ */
 
 .board-cell {
@@ -705,19 +705,19 @@
     -fx-border-radius: 2;
 }
 
-/* Ghost previews while dragging a ship into place (deployment screens). */
+/* ghost previews while dragging a ship into place (deployment screens). */
 .board-cell-ghost-valid {
     -fx-background-color: rgba(232,213,163,0.4);
 }
 .board-cell-ghost-invalid {
     -fx-background-color: rgba(200,58,58,0.5);
 }
-/* Ghost preview of the weapon trajectory (both battle screens). */
+/* ghost preview of the weapon trajectory (both battle screens). */
 .board-cell-ghost-target {
     -fx-background-color: rgba(255,209,102,0.35);
 }
 
-/* Painted inside a cell by BoardGridPane. */
+/* painted inside a cell by boardgridpane. */
 .board-miss-dot {
     -fx-background-color: #f5f7fa;
     -fx-background-radius: 50%;
@@ -732,8 +732,8 @@
     -fx-stroke-width: 2;
 }
 
-/* ---------- Weapon button states ----------
-   A weapon button carries .weapon-button plus exactly one of these. */
+/* ---------- weapon button states ----------
+   a weapon button carries .weapon-button plus exactly one of these. */
 
 .weapon-button-disabled {
     -fx-background-color: rgba(14,26,40,0.55);
@@ -769,7 +769,7 @@
     -fx-letter-spacing: 0.4px;
 }
 
-/* ---------- Small one-property utilities (replace inline CSS) ---------- */
+/* ---------- small one-property utilities (replace inline css) ---------- */
 
 .orientation-label {
     -fx-font-size: 13px;
@@ -808,15 +808,15 @@
     -fx-effect: dropshadow(gaussian, #ffd166, 14, 0.5, 0, 0);
 }
 
-/* ---------- Game-over screens ---------- */
+/* ---------- game-over screens ---------- */
 
-/* Defeat banner: same size as the shared .app-title but haloed in red. */
+/* defeat banner: same size as the shared .app-title but haloed in red. */
 .defeat-banner {
     -fx-font-size: 52px;
     -fx-effect: dropshadow(gaussian, rgba(255,92,92,0.55), 28, 0.35, 0, 0);
 }
 
-/* Full-bleed mood wash over the sea: warm gold for a win, cool red for a loss. */
+/* full-bleed mood wash over the sea: warm gold for a win, cool red for a loss. */
 .mood-wash-win {
     -fx-background-color: radial-gradient(center 50% 15%, radius 90%, rgba(255,209,102,0.16) 0%, rgba(255,209,102,0.0) 70%);
 }
@@ -832,7 +832,7 @@
     -fx-background-color: rgba(46,93,135,0.6);
 }
 
-/* ---------- Modal Alert Dialogs ---------- */
+/* ---------- modal alert dialogs ---------- */
 
 .dialog-pane.battleship-alert {
     -fx-background-color: #071528;

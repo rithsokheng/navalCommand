@@ -9,8 +9,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Strategy implementation for Hotseat (pass-and-play) combat: the viewport dynamically
- * alternates to whichever Admiral currently holds the turn.
+ * strategy implementation for hotseat (pass-and-play) combat: the viewport dynamically
+ * alternates to whichever admiral currently holds the turn.
  */
 public class AlternatingPerspective implements BattlePerspective {
 

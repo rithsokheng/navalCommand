@@ -10,38 +10,38 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * A participant in the game — the aggregate root for one admiral.
+ * a participant in the game — the aggregate root for one admiral.
  *
- * <p>Two structural fixes live here:</p>
+ * <p>two structural fixes live here:</p>
  * <ul>
- *   <li><strong>V1.1 / Smell 5.1</strong> — the primary grid is private and has no
- *       getter. Code that wants to deploy hulls, take a shot or read a grid talks
- *       to the narrow {@link FleetDeployment}, {@link ShotTarget} and
- *       {@link FleetReadout} command surfaces this class implements. The public
- *       {@code getMutableBoard()} backdoor is gone for good.</li>
- *   <li><strong>V2.2</strong> — the {@code isHuman} primitive is gone: behaviour
+ *   <li><strong>v1.1 / smell 5.1</strong> — the primary grid is private and has no
+ *       getter. code that wants to deploy hulls, take a shot or read a grid talks
+ *       to the narrow {@link fleetdeployment}, {@link shottarget} and
+ *       {@link fleetreadout} command surfaces this class implements. the public
+ *       {@code getmutableboard()} backdoor is gone for good.</li>
+ *   <li><strong>v2.2</strong> — the {@code ishuman} primitive is gone: behaviour
  *       that differs between a person and a machine (who supplies the next shot,
- *       whether results are learned from) is expressed by {@link HumanPlayer} and
- *       {@link AiPlayer} overriding {@link #decideAutonomousShot()} and
- *       {@link #observeOwnShot(ShotResult)}.</li>
+ *       whether results are learned from) is expressed by {@link humanplayer} and
+ *       {@link aiplayer} overriding {@link #decideautonomousshot()} and
+ *       {@link #observeownshot(shotresult)}.</li>
  * </ul>
  *
- * <p><strong>SRP</strong>: identity + fleet + knowledge + arsenal. Weapon stocking,
- * arming and aiming were extracted into {@link Arsenal}, which this class forwards
+ * <p><strong>srp</strong>: identity + fleet + knowledge + arsenal. weapon stocking,
+ * arming and aiming were extracted into {@link arsenal}, which this class forwards
  * to so the rest of the game cannot mutate ammunition directly.</p>
  */
 public abstract class Player implements FleetReadout, FleetDeployment, ShotTarget, AmmoReadout {
 
     private final String name;
-    /** Never exposed — the whole point of the V1.1 fix. */
+    /** never exposed — the whole point of the v1.1 fix. */
     private final PrimaryGrid primaryGrid;
     private final TrackingGrid trackingGrid;
     private final Arsenal arsenal;
 
     /**
      * @param name                  display name
-     * @param boardSize             battlefield edge length
-     * @param enemyFleetComposition the opposing roster (published by the rules of the game)
+     * @param boardsize             battlefield edge length
+     * @param enemyfleetcomposition the opposing roster (published by the rules of the game)
      */
     protected Player(String name, int boardSize, Map<ShipType, Integer> enemyFleetComposition) {
         this.name = Objects.requireNonNull(name, "A player needs a name.");
@@ -59,66 +59,66 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
     }
 
     /**
-     * What this player knows about the enemy — safe to expose, because a tracking
-     * grid cannot answer questions about unobserved ship positions (V1.3).
+     * what this player knows about the enemy — safe to expose, because a tracking
+     * grid cannot answer questions about unobserved ship positions (v1.3).
      */
     public TrackingGrid trackingGrid() {
         return trackingGrid;
     }
 
     /**
-     * Own waters and fleet deployment aggregate (implements FleetReadout,
-     * FleetDeployment, and ShotTarget).
+     * own waters and fleet deployment aggregate (implements fleetreadout,
+     * fleetdeployment, and shottarget).
      */
     public PrimaryGrid primaryGrid() {
         return primaryGrid;
     }
 
     /**
-     * Ammunition readout component for weapon stock queries.
+     * ammunition readout component for weapon stock queries.
      */
     public AmmoReadout ammoReadout() {
         return arsenal;
     }
 
-    // ---------- Polymorphic turn behaviour (replaces the isHuman flag) ----------
+    // ---------- polymorphic turn behaviour (replaces the ishuman flag) ----------
 
-    /** True for machine-controlled players, which act without a UI click. */
+    /** true for machine-controlled players, which act without a ui click. */
     public abstract boolean isAutonomous();
 
-    /** Convenience query: true if this player is controlled by a human. */
+    /** convenience query: true if this player is controlled by a human. */
     public boolean isHuman() {
         return !isAutonomous();
     }
 
     /**
-     * Produces this player's next shot on its own, or {@link Optional#empty()} when
-     * a human must click a cell. {@link AiPlayer} overrides this; {@link HumanPlayer}
+     * produces this player's next shot on its own, or {@link optional#empty()} when
+     * a human must click a cell. {@link aiplayer} overrides this; {@link humanplayer}
      * inherits the empty answer.
      */
     public Optional<ShotOrder> decideAutonomousShot() {
         return Optional.empty();
     }
 
-    /** Learning hook: called for the shooter after their own shot was resolved. */
+    /** learning hook: called for the shooter after their own shot was resolved. */
     public void observeOwnShot(ShotResult result) {
-        // Nothing to learn for a human.
+        // nothing to learn for a human.
     }
 
-    // ---------- Weapon commands (delegated to the Arsenal component) ----------
+    // ---------- weapon commands (delegated to the arsenal component) ----------
 
-    /** Arms a weapon if the battlefield offers it and ammunition remains. */
+    /** arms a weapon if the battlefield offers it and ammunition remains. */
     public boolean selectWeapon(Weapon weapon) {
         return arsenal.select(weapon);
     }
 
-    /** @deprecated Prefer {@link #selectWeapon(Weapon)} with {@link com.battleship.model.weapon.WeaponCatalog#defaultWeapon()}. */
+    /** @deprecated prefer {@link #selectweapon(weapon)} with {@link com.battleship.model.weapon.weaponcatalog#defaultweapon()}. */
     @Deprecated
     public boolean aimDefault() {
         return selectWeapon(com.battleship.model.weapon.WeaponCatalog.defaultWeapon());
     }
 
-    /** @deprecated Prefer {@link #selectWeapon(Weapon)} with {@link com.battleship.model.weapon.WeaponCatalog#nuclear()}. */
+    /** @deprecated prefer {@link #selectweapon(weapon)} with {@link com.battleship.model.weapon.weaponcatalog#nuclear()}. */
     @Deprecated
     public boolean aimNuclear() {
         return selectWeapon(com.battleship.model.weapon.WeaponCatalog.nuclear());
@@ -129,12 +129,12 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
         arsenal.toggleOrientation();
     }
 
-    /** Rule 1: after firing, the admiral must actively re-select a weapon. */
+    /** rule 1: after firing, the admiral must actively re-select a weapon. */
     public void resetWeaponAfterShot() {
         arsenal.resetAfterShot();
     }
 
-    /** Arms a weapon + orientation for an automated or networked shot. */
+    /** arms a weapon + orientation for an automated or networked shot. */
     public void armWeapon(Weapon weapon, Orientation orientation) {
         arsenal.arm(weapon, orientation);
     }
@@ -155,7 +155,7 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
         arsenal.resupply(weapon, amount);
     }
 
-    // ---------- AmmoReadout ----------
+    // ---------- ammoreadout ----------
 
     @Override
     public int ammoCount(Weapon weapon) {
@@ -172,7 +172,7 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
         return arsenal.isAmmoInfinite(weapon);
     }
 
-    // ---------- FleetReadout ----------
+    // ---------- fleetreadout ----------
 
     @Override
     public int size() {
@@ -194,7 +194,7 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
         return primaryGrid.isFleetDestroyed();
     }
 
-    // ---------- FleetDeployment ----------
+    // ---------- fleetdeployment ----------
 
     @Override
     public boolean canDeploy(ShipType type, Coordinate start, Orientation orientation) {
@@ -216,7 +216,7 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
         primaryGrid.clearDeployment();
     }
 
-    // ---------- ShotTarget ----------
+    // ---------- shottarget ----------
 
     @Override
     public boolean isCellResolved(Coordinate c) {
@@ -228,7 +228,7 @@ public abstract class Player implements FleetReadout, FleetDeployment, ShotTarge
         return primaryGrid.receiveShot(c);
     }
 
-    /** Hulls currently deployed — the placement counter uses it. */
+    /** hulls currently deployed — the placement counter uses it. */
     public int deployedShipCount() {
         return primaryGrid.deployedShipCount();
     }

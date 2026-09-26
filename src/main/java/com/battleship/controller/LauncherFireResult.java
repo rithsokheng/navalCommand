@@ -6,10 +6,10 @@ import com.battleship.model.projection.ShipSnapshot;
 import java.util.List;
 
 /**
- * Outcome of one launcher shot, which may cover multiple cells (salvo, nuclear)
+ * outcome of one launcher shot, which may cover multiple cells (salvo, nuclear)
  * and therefore may register multiple hits/misses and sink multiple ships at once.
  *
- * <p>Sunk hulls are reported as immutable {@link ShipSnapshot}s (V1.2), so a view
+ * <p>sunk hulls are reported as immutable {@link shipsnapshot}s (v1.2), so a view
  * or a network peer can never reach back into the defender's fleet.</p>
  */
 public record LauncherFireResult(List<ShotResult> results, List<ShipSnapshot> sunkShips) {

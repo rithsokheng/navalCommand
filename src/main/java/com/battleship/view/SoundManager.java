@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Singleton manager for all game audio using only {@code javax.sound.sampled}
- * (ships with every JDK, no extra modules needed).
+ * singleton manager for all game audio using only {@code javax.sound.sampled}
+ * (ships with every jdk, no extra modules needed).
  *
- * <p>Every public method is completely crash-safe: if anything goes wrong
+ * <p>every public method is completely crash-safe: if anything goes wrong
  * during init or playback, the game keeps running silently.</p>
  */
 public final class SoundManager implements GameAudio {
@@ -17,7 +17,7 @@ public final class SoundManager implements GameAudio {
     private static volatile SoundManager instance;
 
     /**
-     * @deprecated Prefer dependency-injecting {@link GameAudio} via {@link ViewNavigator} or constructors.
+     * @deprecated prefer dependency-injecting {@link gameaudio} via {@link viewnavigator} or constructors.
      */
     @Deprecated
     public static SoundManager getInstance() {
@@ -27,7 +27,7 @@ public final class SoundManager implements GameAudio {
                     try {
                         instance = new SoundManager();
                     } catch (Exception e) {
-                        // If sound system fails entirely, return a silent no-op instance
+                        // if sound system fails entirely, return a silent no-op instance
                         instance = new SoundManager(true);
                     }
                 }
@@ -36,7 +36,7 @@ public final class SoundManager implements GameAudio {
         return instance;
     }
 
-    // ── State ───────────────────────────────────────────────────────
+    // ── state ───────────────────────────────────────────────────────
     private Clip bgmClip;
     private String currentBgmName;
     private boolean muted = false;
@@ -62,7 +62,7 @@ public final class SoundManager implements GameAudio {
         "place-ship", "remove-ship", "victory", "defeat", "turn-start"
     };
 
-    /** No-op constructor for the silent fallback instance. */
+    /** no-op constructor for the silent fallback instance. */
     private SoundManager(boolean silent) {
         this.initFailed = true;
     }
@@ -83,7 +83,7 @@ public final class SoundManager implements GameAudio {
 
     private void ensureGeneratedFiles() {
         if (AUDIO_DIR == null) return;
-        // If classpath audio exists, skip generation
+        // if classpath audio exists, skip generation
         try {
             if (getClass().getResource("/audio/click.wav") != null) return;
         } catch (Exception ignored) { }
@@ -97,7 +97,7 @@ public final class SoundManager implements GameAudio {
         } catch (Exception ignored) { }
     }
 
-    // ── Public API: background music ────────────────────────────────
+    // ── public api: background music ────────────────────────────────
 
     public void playMenuMusic() { playBgm("menu-music"); }
     public void playBattleMusic() { playBgm("battle-music"); }
@@ -113,7 +113,7 @@ public final class SoundManager implements GameAudio {
         bgmClip = null;
     }
 
-    // ── Public API: sound effects ───────────────────────────────────
+    // ── public api: sound effects ───────────────────────────────────
 
     public void playClick() { play("click"); }
     public void playFire() { play("fire"); }
@@ -131,7 +131,7 @@ public final class SoundManager implements GameAudio {
         if (playerWon) playVictory(); else playDefeat();
     }
 
-    // ── Volume / mute ───────────────────────────────────────────────
+    // ── volume / mute ───────────────────────────────────────────────
 
     public void setMasterVolume(double v) { masterVolume = clamp(v); applyBgmVolume(); }
     public double getMasterVolume() { return masterVolume; }
@@ -156,7 +156,7 @@ public final class SoundManager implements GameAudio {
     public boolean isMuted() { return muted; }
     public void toggleMute() { setMuted(!muted); }
 
-    // ── Internal: SFX ──────────────────────────────────────────────
+    // ── internal: sfx ──────────────────────────────────────────────
 
     private void play(String name) {
         if (muted || initFailed) return;
@@ -182,7 +182,7 @@ public final class SoundManager implements GameAudio {
         } catch (Exception ignored) { }
     }
 
-    // ── Internal: BGM ──────────────────────────────────────────────
+    // ── internal: bgm ──────────────────────────────────────────────
 
     private void playBgm(String name) {
         currentBgmName = name;
@@ -219,10 +219,10 @@ public final class SoundManager implements GameAudio {
         } catch (Exception ignored) { }
     }
 
-    // ── Internal: file resolution ──────────────────────────────────
+    // ── internal: file resolution ──────────────────────────────────
 
     private byte[] loadWavBytes(String name) {
-        // 1. Classpath
+        // 1. classpath
         try {
             java.net.URL url = getClass().getResource("/audio/" + name + ".wav");
             if (url != null) {
@@ -231,7 +231,7 @@ public final class SoundManager implements GameAudio {
                 }
             }
         } catch (Exception ignored) { }
-        // 2. Generated directory
+        // 2. generated directory
         if (AUDIO_DIR != null) {
             File f = new File(AUDIO_DIR, name + ".wav");
             if (f.exists()) {

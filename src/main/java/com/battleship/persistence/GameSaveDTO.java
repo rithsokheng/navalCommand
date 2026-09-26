@@ -3,13 +3,13 @@ package com.battleship.persistence;
 import java.util.List;
 
 /**
- * Flat, Gson-friendly representation of a full game save, matching the
- * JSON schema in the spec (version, timestamp, boardSize, players, turnHistory...).
+ * flat, gson-friendly representation of a full game save, matching the
+ * json schema in the spec (version, timestamp, boardsize, players, turnhistory...).
  *
- * Encapsulated: all fields are private with read-only accessors, constructed
- * only through the {@link Builder}, which validates the invariants
+ * encapsulated: all fields are private with read-only accessors, constructed
+ * only through the {@link builder}, which validates the invariants
  * (version tag present, positive board size, both players present).
- * Nested payload types are immutable records. Gson populates the private
+ * nested payload types are immutable records. gson populates the private
  * fields reflectively, so the wire format is unchanged.
  */
 public class GameSaveDTO {
@@ -45,7 +45,7 @@ public class GameSaveDTO {
 
     public static Builder builder() { return new Builder(); }
 
-    /** Validates invariants at construction time. */
+    /** validates invariants at construction time. */
     public static final class Builder {
         private String version;
         private String timestamp;

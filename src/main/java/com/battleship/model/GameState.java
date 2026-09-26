@@ -1,6 +1,6 @@
 package com.battleship.model;
 
-/** High-level phase of the overall game flow. */
+/** high-level phase of the overall game flow. */
 public enum GameState {
     MAIN_MENU,
     MODE_SELECT,

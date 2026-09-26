@@ -21,8 +21,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 /**
- * Joins a LAN match by pasting/typing the invite text a host's QR code
- * decodes to (format: {@code BATTLESHIP:<ip>:<port>:<code>}).
+ * joins a lan match by pasting/typing the invite text a host's qr code
+ * decodes to (format: {@code battleship:<ip>:<port>:<code>}).
  */
 public class JoinLobbyView {
 
@@ -142,7 +142,7 @@ public class JoinLobbyView {
         if (!(msg instanceof NetMessage.Welcome welcome)) return;
 
         Theater theater = Theater.valueOf(welcome.theater());
-        controller.setTheater(theater); // sets up selectedTheater so placement helpers work below
+        controller.setTheater(theater); // sets up selectedtheater so placement helpers work below
 
         Player me = new HumanPlayer("You", theater);
         NetworkGameSession netSession = new NetworkGameSession(

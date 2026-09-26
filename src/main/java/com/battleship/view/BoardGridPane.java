@@ -20,19 +20,19 @@ import javafx.util.Duration;
 import java.util.List;
 
 /**
- * Reusable board grid used by the placement screens, both battle screens and the
+ * reusable board grid used by the placement screens, both battle screens and the
  * game-over screens.
  *
- * <p>Ships are painted from immutable {@link ShipSnapshot}s (V1.2) — this widget
- * never receives a mutable domain entity, so a UI component cannot alter the
+ * <p>ships are painted from immutable {@link shipsnapshot}s (v1.2) — this widget
+ * never receives a mutable domain entity, so a ui component cannot alter the
  * game state it renders.</p>
  */
 public class BoardGridPane extends GridPane {
 
-    /** Base style class carried by every cell; state classes are toggled on top. */
+    /** base style class carried by every cell; state classes are toggled on top. */
     public static final String CELL_CLASS = "board-cell";
 
-    /** Ghost-preview classes, usable via {@link #setCellState(Coordinate, String)}. */
+    /** ghost-preview classes, usable via {@link #setcellstate(coordinate, string)}. */
     public static final String GHOST_VALID = "board-cell-ghost-valid";
     public static final String GHOST_INVALID = "board-cell-ghost-invalid";
     public static final String GHOST_TARGET = "board-cell-ghost-target";
@@ -42,7 +42,7 @@ public class BoardGridPane extends GridPane {
     private static final String CELL_HIT = "board-cell-hit";
     private static final String CELL_SUNK = "board-cell-sunk";
 
-    /** Every class this grid may toggle on a cell; cleared before a new state is applied. */
+    /** every class this grid may toggle on a cell; cleared before a new state is applied. */
     private static final String[] CELL_STATE_CLASSES = {
             CELL_SHIP, CELL_MISS, CELL_HIT, CELL_SUNK,
             GHOST_VALID, GHOST_INVALID, GHOST_TARGET
@@ -136,18 +136,18 @@ public class BoardGridPane extends GridPane {
         applyCellState(cells[row][col], null);
     }
 
-    /** Applies a cell state (or {@code null} for the plain base cell) as a style class. */
+    /** applies a cell state (or {@code null} for the plain base cell) as a style class. */
     private void applyCellState(StackPane cell, String stateClass) {
         cell.getStyleClass().removeAll(CELL_STATE_CLASSES);
         if (stateClass != null) cell.getStyleClass().add(stateClass);
     }
 
-    /** Applies one of the ghost/state classes to a cell; used by the ghost previews. */
+    /** applies one of the ghost/state classes to a cell; used by the ghost previews. */
     public void setCellState(Coordinate c, String stateClass) {
         applyCellState(cells[c.getRow()][c.getCol()], stateClass);
     }
 
-    /** Renders a placed (not-yet-shot) ship, used during placement and on own-fleet boards. */
+    /** renders a placed (not-yet-shot) ship, used during placement and on own-fleet boards. */
     public void renderShip(ShipSnapshot ship) {
         Orientation orientation = ship.orientation();
         Image sprite = ImageResources.ship(ship.type(), orientation);
@@ -161,7 +161,7 @@ public class BoardGridPane extends GridPane {
             applyCellState(cell, CELL_SHIP);
 
             if (sprite != null) {
-                // The source art is a single square image per hull; slice out the
+                // the source art is a single square image per hull; slice out the
                 // portion that belongs to this cell along the ship's long axis.
                 boolean horizontal = orientation.isHorizontal();
                 double sliceW = horizontal ? sprite.getWidth() / len : sprite.getWidth();
@@ -180,9 +180,9 @@ public class BoardGridPane extends GridPane {
     }
 
     /**
-     * Plays a quick fire-1 -> fire-2 -> fire-3 -> hit-explosion flipbook in the
-     * given cell. Returns false (and adds nothing) if any frame is missing, so
-     * the caller can fall back to the static explosion image or the plain "X".
+     * plays a quick fire-1 -> fire-2 -> fire-3 -> hit-explosion flipbook in the
+     * given cell. returns false (and adds nothing) if any frame is missing, so
+     * the caller can fall back to the static explosion image or the plain "x".
      */
     private boolean playFireFlipbook(StackPane cell) {
         Image f1 = ImageResources.effect("fire-1");
@@ -206,7 +206,7 @@ public class BoardGridPane extends GridPane {
         return true;
     }
 
-    /** Renders a MISS or a non-fatal HIT. Sunk ships must go through renderSunkShip(). */
+    /** renders a miss or a non-fatal hit. sunk ships must go through rendersunkship(). */
     public void renderShot(Coordinate coord, CellStatus status) {
         StackPane cell = cells[coord.getRow()][coord.getCol()];
         cell.getChildren().clear();
@@ -252,11 +252,11 @@ public class BoardGridPane extends GridPane {
                 st.setCycleCount(2);
                 st.play();
             }
-            default -> { /* SHIP/EMPTY/SUNK handled elsewhere */ }
+            default -> { /* ship/empty/sunk handled elsewhere */ }
         }
     }
 
-    /** Colours every cell of a sunk hull (not just the triggering hit) and crosses it out. */
+    /** colours every cell of a sunk hull (not just the triggering hit) and crosses it out. */
     public void renderSunkShip(List<Coordinate> occupiedCells) {
         Image fire = ImageResources.effect("hit-explosion");
         double span = cellPx * 0.32;

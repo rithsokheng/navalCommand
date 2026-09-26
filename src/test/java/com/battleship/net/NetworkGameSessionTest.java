@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** The Role enum replaces the raw boolean isHost flag (P3). */
+/** the role enum replaces the raw boolean ishost flag (p3). */
 class NetworkGameSessionTest {
 
     private NetworkGameSession sessionFor(Role role) {

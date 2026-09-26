@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-/** Small helpers for discovering this machine's LAN address and a free TCP port. */
+/** small helpers for discovering this machine's lan address and a free tcp port. */
 public final class NetUtil {
 
     private NetUtil() { }
 
-    /** Best-effort guess at this machine's LAN IPv4 address (falls back to loopback). */
+    /** best-effort guess at this machine's lan ipv4 address (falls back to loopback). */
     public static String getLocalIp() {
         try {
             List<String> candidates = new ArrayList<>();
@@ -36,7 +36,7 @@ public final class NetUtil {
         }
     }
 
-    /** Asks the OS for an available ephemeral TCP port. */
+    /** asks the os for an available ephemeral tcp port. */
     public static int findFreePort() {
         try (ServerSocket s = new ServerSocket(0)) {
             return s.getLocalPort();

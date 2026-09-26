@@ -8,14 +8,14 @@ import javafx.stage.Window;
 import java.util.Optional;
 
 /**
- * Centralized utility for presenting dark naval-themed, owner-attached alert dialogs.
+ * centralized utility for presenting dark naval-themed, owner-attached alert dialogs.
  *
- * <p>Ensures:
+ * <p>ensures:
  * <ul>
- *   <li>Dialogs are attached to the owning {@link Window} so they center properly and
- *       never get obscured behind the main window on Linux/X11.</li>
- *   <li>The dark naval stylesheet ({@code battleship.css}) is applied to {@link DialogPane}.</li>
- *   <li>Boilerplate alert construction is unified and DRY.</li>
+ *   <li>dialogs are attached to the owning {@link window} so they center properly and
+ *       never get obscured behind the main window on linux/x11.</li>
+ *   <li>the dark naval stylesheet ({@code battleship.css}) is applied to {@link dialogpane}.</li>
+ *   <li>boilerplate alert construction is unified and dry.</li>
  * </ul>
  * </p>
  */

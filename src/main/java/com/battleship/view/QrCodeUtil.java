@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import java.util.EnumMap;
 import java.util.Map;
 
-/** Renders a string as a QR code image entirely offline (no network calls). */
+/** renders a string as a qr code image entirely offline (no network calls). */
 public final class QrCodeUtil {
 
     private QrCodeUtil() { }

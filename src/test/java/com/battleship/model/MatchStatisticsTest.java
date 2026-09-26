@@ -75,7 +75,7 @@ class MatchStatisticsTest {
 
         MatchStatistics stats = MatchStatistics.from(fleet);
 
-        // 3 hits total (1 HIT + 2 SUNK) + 2 misses = 5 total shots
+        // 3 hits total (1 hit + 2 sunk) + 2 misses = 5 total shots
         assertEquals(5, stats.totalShots());
         assertEquals(3, stats.hits());
         assertEquals(2, stats.misses());

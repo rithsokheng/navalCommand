@@ -22,26 +22,26 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Template Method base for both ship-placement screens (local + network).
+ * template method base for both ship-placement screens (local + network).
  *
- * <p>Owns every shared concern: the dock, the board grid, native drag-and-drop
+ * <p>owns every shared concern: the dock, the board grid, native drag-and-drop
  * (drag-over/enter/exit/drop plus click-to-remove), the orientation label and
- * its rotate wiring, the placement counter, the READY gating, and the exit
- * confirmation. Subclasses contribute only their screen chrome
- * ({@link #assembleLayout()}, {@link #decorateRoot(Pane)}) and their READY /
+ * its rotate wiring, the placement counter, the ready gating, and the exit
+ * confirmation. subclasses contribute only their screen chrome
+ * ({@link #assemblelayout()}, {@link #decorateroot(pane)}) and their ready /
  * exit behaviour.</p>
  *
- * <p>This mirrors the {@link AbstractBattleView} design already proven on the
+ * <p>this mirrors the {@link abstractbattleview} design already proven on the
  * battle screens, eliminating the former near-verbatim duplication between
- * {@code ShipPlaceView} and {@code NetworkShipPlaceView}.</p>
+ * {@code shipplaceview} and {@code networkshipplaceview}.</p>
  */
 public abstract class AbstractShipPlaceView {
 
     protected final ViewNavigator nav;
     protected final GameController controller;
-    /** The admiral deploying here (local: placing player; network: {@code netSession.getMe()}). */
+    /** the admiral deploying here (local: placing player; network: {@code netsession.getme()}). */
     protected final Player player;
-    /** Audio facade injected from the navigator — never the static singleton. */
+    /** audio facade injected from the navigator — never the static singleton. */
     protected final GameAudio audio;
 
     protected BoardGridPane boardGridPane;
@@ -50,7 +50,7 @@ public abstract class AbstractShipPlaceView {
     protected Label countLabel;
     protected Button readyButton;
 
-    /** Current ship orientation, toggled by R / right-click / the ROTATE button. */
+    /** current ship orientation, toggled by r / right-click / the rotate button. */
     protected Orientation orientation = Orientation.HORIZONTAL;
 
     private final List<Coordinate> ghostCells = new ArrayList<>();
@@ -62,7 +62,7 @@ public abstract class AbstractShipPlaceView {
         this.audio = nav.getAudio();
     }
 
-    // ================= Template method =================
+    // ================= template method =================
 
     private static double computePlacementCellSize(int size) {
         if (size <= 5) return 84;
@@ -75,7 +75,7 @@ public abstract class AbstractShipPlaceView {
         return new BoardGridPane(boardSize, computePlacementCellSize(boardSize));
     }
 
-    /** Assembles the shared placement skeleton. Subclasses customize via hooks only. */
+    /** assembles the shared placement skeleton. subclasses customize via hooks only. */
     public final StackPane build() {
         dockPane = createDock();
         boardGridPane = createBoardGrid();
@@ -111,50 +111,50 @@ public abstract class AbstractShipPlaceView {
         return root;
     }
 
-    // ================= Hooks (subclass responsibilities) =================
+    // ================= hooks (subclass responsibilities) =================
 
-    /** Assembles the screen-specific chrome around the shared widgets. */
+    /** assembles the screen-specific chrome around the shared widgets. */
     protected abstract Pane assembleLayout();
 
-    /** Optional root decoration (e.g. the animated ocean backdrop). */
+    /** optional root decoration (e.g. the animated ocean backdrop). */
     protected abstract StackPane decorateRoot(Pane layout);
 
-    /** Handles the READY button (local: confirm + route; network: socket handshake). */
+    /** handles the ready button (local: confirm + route; network: socket handshake). */
     protected abstract void onReadyPressed();
 
-    /** Confirmation text shown by the shared exit dialog. */
+    /** confirmation text shown by the shared exit dialog. */
     protected abstract String exitPrompt();
 
-    /** Extra teardown once the player confirms exit, before returning to the menu. */
+    /** extra teardown once the player confirms exit, before returning to the menu. */
     protected abstract void onExitConfirmed();
 
-    // ================= Overridable hooks (sensible defaults) =================
+    // ================= overridable hooks (sensible defaults) =================
 
-    /** Extra reason to keep the READY button disabled (e.g. READY already sent). */
+    /** extra reason to keep the ready button disabled (e.g. ready already sent). */
     protected boolean isReadyLocked() { return false; }
 
-    /** Called once the screen is fully assembled and wired, before the first refresh. */
+    /** called once the screen is fully assembled and wired, before the first refresh. */
     protected void onViewShown() { }
 
-    /** Called after every orientation change. */
+    /** called after every orientation change. */
     protected void onOrientationToggled() { }
 
-    /** Called at the end of {@link #refreshAll()} for extra per-screen labels. */
+    /** called at the end of {@link #refreshall()} for extra per-screen labels. */
     protected void onRefreshed() { }
 
-    /** READY button caption. */
+    /** ready button caption. */
     protected String readyButtonLabel() { return "READY"; }
 
-    // ================= Shared behaviour =================
+    // ================= shared behaviour =================
 
-    /** Builds the dock tray; subclasses add style class / width in {@link #assembleLayout()}. */
+    /** builds the dock tray; subclasses add style class / width in {@link #assemblelayout()}. */
     protected final ShipDockPane createDock() {
         ShipDockPane dock = new ShipDockPane(controller, player);
         dock.setOrientation(orientation);
         return dock;
     }
 
-    /** Shared EXIT button wired to the common confirm dialog. */
+    /** shared exit button wired to the common confirm dialog. */
     protected final Button buildExitButton() {
         Button exit = new Button("EXIT");
         exit.getStyleClass().add("danger-button");
@@ -165,7 +165,7 @@ public abstract class AbstractShipPlaceView {
         return exit;
     }
 
-    /** Wires drag-and-drop and click-to-remove onto every board cell. */
+    /** wires drag-and-drop and click-to-remove onto every board cell. */
     protected void setupDragTargets() {
         int size = boardGridPane.getSize();
         for (int r = 0; r < size; r++) {
@@ -264,7 +264,7 @@ public abstract class AbstractShipPlaceView {
             boardGridPane.resetCellStyle(c.getRow(), c.getCol());
         }
         ghostCells.clear();
-        // Re-render any already-placed ships that may have been under the ghost.
+        // re-render any already-placed ships that may have been under the ghost.
         for (com.battleship.model.projection.ShipSnapshot s : player.fleet()) {
             boardGridPane.renderShip(s);
         }
@@ -278,7 +278,7 @@ public abstract class AbstractShipPlaceView {
         shake.play();
     }
 
-    /** Re-renders the board, dock and counter, then re-evaluates the READY gating. */
+    /** re-renders the board, dock and counter, then re-evaluates the ready gating. */
     protected void refreshAll() {
         boardGridPane.clearAll();
         for (com.battleship.model.projection.ShipSnapshot s : player.fleet()) {

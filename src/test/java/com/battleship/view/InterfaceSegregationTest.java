@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Validates the Interface Segregation Principle (ISP) and component role boundaries
+ * validates the interface segregation principle (isp) and component role boundaries
  * introduced during academic refactoring.
  */
 class InterfaceSegregationTest {

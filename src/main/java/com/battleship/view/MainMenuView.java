@@ -15,8 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
- * Main menu dashboard (ISSUE 1). Shows PLAY / HOW TO PLAY / OPTIONS / EXIT only —
- * no game-mode buttons here. Vertical layout, centered, naval-themed buttons.
+ * main menu dashboard (issue 1). shows play / how to play / options / exit only —
+ * no game-mode buttons here. vertical layout, centered, naval-themed buttons.
  */
 public class MainMenuView {
 
@@ -86,7 +86,7 @@ public class MainMenuView {
         }
         root.getChildren().add(layout);
 
-        // Gentle entrance so the menu doesn't just pop into place.
+        // gentle entrance so the menu doesn't just pop into place.
         layout.setOpacity(0.0);
         layout.setTranslateY(16);
         FadeTransition fade = new FadeTransition(Duration.millis(420), layout);

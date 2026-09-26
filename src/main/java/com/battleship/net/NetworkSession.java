@@ -14,18 +14,18 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 /**
- * Thin TCP transport for a single host&lt;-&gt;client connection: one JSON
- * {@link NetMessage} per line. Connection setup and the blocking read loop run
+ * thin tcp transport for a single host&lt;-&gt;client connection: one json
+ * {@link netmessage} per line. connection setup and the blocking read loop run
  * on a background daemon thread; every callback is marshalled through the
- * caller-supplied {@link Executor} (fixes F6 + DIP).
+ * caller-supplied {@link executor} (fixes f6 + dip).
  *
- * <p>Fixes the DIP audit finding: this class used to
- * {@code import javafx.application.Platform} and default to
- * {@code Platform::runLater}, which welded the transport layer to the JavaFX
- * toolkit — the class would not even link on a headless server, a CLI client or
- * a test without JavaFX on the classpath. The dispatcher is now a plain
- * {@link java.util.concurrent.Executor} injected by the caller: the JavaFX views
- * pass {@code Platform::runLater}, tests pass {@code Runnable::run}.</p>
+ * <p>fixes the dip audit finding: this class used to
+ * {@code import javafx.application.platform} and default to
+ * {@code platform::runlater}, which welded the transport layer to the javafx
+ * toolkit — the class would not even link on a headless server, a cli client or
+ * a test without javafx on the classpath. the dispatcher is now a plain
+ * {@link java.util.concurrent.executor} injected by the caller: the javafx views
+ * pass {@code platform::runlater}, tests pass {@code runnable::run}.</p>
  */
 public class NetworkSession {
 
@@ -49,7 +49,7 @@ public class NetworkSession {
         dispatcher.execute(action);
     }
 
-    /** Opens a listening socket on {@code port} and waits for exactly one peer to connect. */
+    /** opens a listening socket on {@code port} and waits for exactly one peer to connect. */
     public static NetworkSession host(int port, Consumer<NetworkSession> onClientConnected,
                                       Consumer<Exception> onError, Executor dispatcher) {
         NetworkSession session = new NetworkSession(dispatcher);
@@ -69,7 +69,7 @@ public class NetworkSession {
         return session;
     }
 
-    /** Connects out to a host's IP/port, dispatching callbacks through the supplied executor. */
+    /** connects out to a host's ip/port, dispatching callbacks through the supplied executor. */
     public static void connect(String host, int port, Consumer<NetworkSession> onConnected,
                                Consumer<Exception> onError, Executor dispatcher) {
         Thread t = new Thread(() -> {

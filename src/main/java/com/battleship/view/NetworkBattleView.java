@@ -28,11 +28,11 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
- * Battle screen for a network ("Play With a Friend") match. Extends
- * {@link AbstractBattleView} (shared weapon bar, ghost preview, fire pipeline)
- * and only contributes the network shot resolution: firing sends a FIRE
- * message and the defender resolves it locally and replies with FIRE_RESULT.
- * No ship layout is ever transmitted.
+ * battle screen for a network ("play with a friend") match. extends
+ * {@link abstractbattleview} (shared weapon bar, ghost preview, fire pipeline)
+ * and only contributes the network shot resolution: firing sends a fire
+ * message and the defender resolves it locally and replies with fire_result.
+ * no ship layout is ever transmitted.
  */
 public class NetworkBattleView extends AbstractBattleView {
 
@@ -52,7 +52,7 @@ public class NetworkBattleView extends AbstractBattleView {
         this.mediator = new NetworkBattleMediator(netSession);
     }
 
-    // ---------- AbstractBattleView hooks ----------
+    // ---------- abstractbattleview hooks ----------
 
     @Override
     protected Player firingPlayer() { return me; }
@@ -219,11 +219,11 @@ public class NetworkBattleView extends AbstractBattleView {
         if (width <= 0 || height <= 0 || ownGrid == null || enemyGrid == null) return;
         int size = ownGrid.getSize();
 
-        // Vertical budget: window minus title (~55), weaponsBox (~65), statusBox (~65),
-        // card chrome (title ~30, padding ~32, spacing ~12), VBox gaps (10*3),
+        // vertical budget: window minus title (~55), weaponsbox (~65), statusbox (~65),
+        // card chrome (title ~30, padding ~32, spacing ~12), vbox gaps (10*3),
         // layout padding (28) ≈ 320px total overhead.
         double availH = height - 320;
-        // Horizontal budget per board: window minus padding (40), gap (28),
+        // horizontal budget per board: window minus padding (40), gap (28),
         // card padding (32 each = 64) ≈ 132px total overhead.
         double availW = (width - 132) / 2.0;
 
@@ -231,7 +231,7 @@ public class NetworkBattleView extends AbstractBattleView {
         maxGridPx = Math.max(260.0, Math.min(maxGridPx, 760.0));
 
         double newCellPx = Math.floor(maxGridPx / size);
-        // Allow cells to grow up to 120px so 5x5 boards on fullscreen are prominent and fill space
+        // allow cells to grow up to 120px so 5x5 boards on fullscreen are prominent and fill space
         newCellPx = Math.min(newCellPx, 120.0);
         ownGrid.setCellSize(newCellPx);
         enemyGrid.setCellSize(newCellPx);
@@ -247,7 +247,7 @@ public class NetworkBattleView extends AbstractBattleView {
         enemyGrid.setDisable(!netSession.isMyTurn());
     }
 
-    // ---------- Networking ----------
+    // ---------- networking ----------
 
     private void handleMessage(NetMessage msg) {
         if (msg == null) return;
@@ -266,7 +266,7 @@ public class NetworkBattleView extends AbstractBattleView {
         nav.showMainMenu();
     }
 
-    /** I am the defender: delegate incoming fire resolution and response to mediator, then render. */
+    /** i am the defender: delegate incoming fire resolution and response to mediator, then render. */
     private void handleIncomingFire(NetMessage.Fire fire) {
         NetworkBattleMediator.IncomingFireOutcome outcome = mediator.resolveAndReply(fire);
 
@@ -290,7 +290,7 @@ public class NetworkBattleView extends AbstractBattleView {
         enemyGrid.setDisable(false);
     }
 
-    /** I am the attacker: apply the result the defender reported for my shot. */
+    /** i am the attacker: apply the result the defender reported for my shot. */
     private void handleFireResult(NetMessage.FireResult result) {
         mediator.recordObservedResult(result);
         boolean anyHit = applyCellResults(result.results());
@@ -310,7 +310,7 @@ public class NetworkBattleView extends AbstractBattleView {
     }
 
     /**
-     * Records and renders every cell the defender reported.
+     * records and renders every cell the defender reported.
      * @return {@code true} if any reported cell was a hit or part of a sunk ship
      */
     private boolean applyCellResults(List<NetMessage.CellResult> results) {
@@ -324,14 +324,14 @@ public class NetworkBattleView extends AbstractBattleView {
             } else if (status == CellStatus.MISS) {
                 enemyGrid.renderShot(c, CellStatus.MISS);
             } else if (status == CellStatus.SUNK) {
-                anyHit = true; // cell rendering handled via the sunkShips list below
+                anyHit = true; // cell rendering handled via the sunkships list below
             }
         }
         return anyHit;
     }
 
     /**
-     * Records and renders every ship reported sunk.
+     * records and renders every ship reported sunk.
      * @return the attack-log fragment for the sunk ships, or an empty string if none
      */
     private String applySunkShips(List<NetMessage.SunkShipInfo> sunkShips) {
@@ -344,7 +344,7 @@ public class NetworkBattleView extends AbstractBattleView {
         return log.toString();
     }
 
-    /** My shot is resolved — hand the turn back to the opponent. */
+    /** my shot is resolved — hand the turn back to the opponent. */
     private void handTurnToOpponent() {
         netSession.beginOpponentTurn();
         turnLabel.setText("OPPONENT'S TURN");
@@ -360,14 +360,14 @@ public class NetworkBattleView extends AbstractBattleView {
         nav.showNetworkGameOver(netSession, won);
     }
 
-    // ---------- Shot resolution (network) ----------
+    // ---------- shot resolution (network) ----------
 
     @Override
     protected void resolveShot(Coordinate anchor) {
         Weapon weapon = me.selectedWeapon();
 
-        // All domain mutations (ammo consumption, launcher reset) live in
-        // the controller-owned NetworkFireService — the view only does UI + network I/O.
+        // all domain mutations (ammo consumption, launcher reset) live in
+        // the controller-owned networkfireservice — the view only does ui + network i/o.
         NetworkFireService.NetworkShotOrder order =
                 controller.fireNetworkShot(me, weapon, anchor, firingOrientation());
 

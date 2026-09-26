@@ -7,24 +7,24 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 /**
- * Encapsulates the target-following queue used by Hunt/Target AI strategies.
- * Once a hit is registered, orthogonal neighbors are enqueued so the AI
+ * encapsulates the target-following queue used by hunt/target ai strategies.
+ * once a hit is registered, orthogonal neighbors are enqueued so the ai
  * "follows the line" on subsequent turns.
  *
- * <p>Validity is checked against the attacker's {@link TrackingGrid}, so the queue
+ * <p>validity is checked against the attacker's {@link trackinggrid}, so the queue
  * never needs (and never gets) the defender's real board.</p>
  */
 public class TargetingQueue {
 
     private final Deque<Coordinate> queue = new ArrayDeque<>();
 
-    /** Returns true if there are queued target cells to pursue. */
+    /** returns true if there are queued target cells to pursue. */
     public boolean hasTargets() {
         return !queue.isEmpty();
     }
 
     /**
-     * Returns the next valid (unshot) target from the queue, or null if the
+     * returns the next valid (unshot) target from the queue, or null if the
      * queue is exhausted (all queued cells have already been shot).
      */
     public Coordinate nextTarget(TrackingGrid knowledge) {
@@ -36,7 +36,7 @@ public class TargetingQueue {
     }
 
     /**
-     * Enqueues the four orthogonal neighbors of the given coordinate,
+     * enqueues the four orthogonal neighbors of the given coordinate,
      * filtering out any that fall outside the board.
      */
     public void enqueueNeighbors(Coordinate c, int boardSize) {
@@ -49,7 +49,7 @@ public class TargetingQueue {
         }
     }
 
-    /** Clears all queued targets (e.g. after a ship is fully sunk). */
+    /** clears all queued targets (e.g. after a ship is fully sunk). */
     public void clear() {
         queue.clear();
     }

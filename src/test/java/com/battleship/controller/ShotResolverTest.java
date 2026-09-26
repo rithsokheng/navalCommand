@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Validates the extracted {@link ShotResolver} shared by local and network play. */
+/** validates the extracted {@link shotresolver} shared by local and network play. */
 class ShotResolverTest {
 
     @Test
@@ -34,12 +34,12 @@ class ShotResolverTest {
     @Test
     void alreadyResolvedAndOutOfBoundsCellsAreSkipped() {
         PrimaryGrid grid = new PrimaryGrid(10);
-        // Salvo anchored at (5,8) horizontally covers (5,8),(5,9),(5,10) — the last is OOB.
+        // salvo anchored at (5,8) horizontally covers (5,8),(5,9),(5,10) — the last is oob.
         LauncherFireResult first = ShotResolver.STANDARD.resolve(
                 grid, WeaponCatalog.salvoBarrage(), new Coordinate(5, 8), Orientation.HORIZONTAL);
         assertEquals(2, first.results().size());
 
-        // Re-resolving the same pattern must yield nothing: all live cells were resolved.
+        // re-resolving the same pattern must yield nothing: all live cells were resolved.
         LauncherFireResult second = ShotResolver.STANDARD.resolve(
                 grid, WeaponCatalog.salvoBarrage(), new Coordinate(5, 8), Orientation.HORIZONTAL);
         assertTrue(second.results().isEmpty());
@@ -51,7 +51,7 @@ class ShotResolverTest {
         PrimaryGrid grid = new PrimaryGrid(10);
         assertTrue(grid.deploy(ShipType.PATROL_BOAT, new Coordinate(0, 0), Orientation.HORIZONTAL));
 
-        // Nuclear pattern (2x3 from anchor) covers both patrol boat cells.
+        // nuclear pattern (2x3 from anchor) covers both patrol boat cells.
         LauncherFireResult result = ShotResolver.STANDARD.resolve(
                 grid, WeaponCatalog.nuclearWarhead(), new Coordinate(0, 0), Orientation.HORIZONTAL);
 

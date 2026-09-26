@@ -6,17 +6,17 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 
 /**
- * A slow, continuously spinning, semi-transparent compass rose watermark.
- * One visual effect, one class (SRP — extracted from the former DecorUtil
- * God object).
+ * a slow, continuously spinning, semi-transparent compass rose watermark.
+ * one visual effect, one class (srp — extracted from the former decorutil
+ * god object).
  */
 public final class CompassWatermark {
 
     private CompassWatermark() { }
 
     /**
-     * Creates the spinning compass rose meant to sit behind other content
-     * (add it as the FIRST child of a StackPane). Returns null if the art
+     * creates the spinning compass rose meant to sit behind other content
+     * (add it as the first child of a stackpane). returns null if the art
      * asset couldn't be loaded, so callers can skip it cleanly.
      */
     public static ImageView compassWatermark(double size) {

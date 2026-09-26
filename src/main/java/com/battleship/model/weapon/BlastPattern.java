@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A first-class blast geometry: the cell footprint a weapon covers from an anchor.
+ * a first-class blast geometry: the cell footprint a weapon covers from an anchor.
  *
- * <p>Replaces {@code LauncherType.patternDimensions()} (V3.1), which leaked raw
+ * <p>replaces {@code launchertype.patterndimensions()} (v3.1), which leaked raw
  * {@code int[][]} arrays and forced callers to guess what the two numbers meant.
- * A pattern is authored in its horizontal layout and transposed for vertical
+ * a pattern is authored in its horizontal layout and transposed for vertical
  * fire, so every weapon describes its shape exactly once.</p>
  *
  * @param rows cells covered vertically in the horizontal layout
@@ -30,23 +30,23 @@ public record BlastPattern(int rows, int cols) {
         return new BlastPattern(rows, cols);
     }
 
-    /** The same footprint rotated into the requested firing orientation. */
+    /** the same footprint rotated into the requested firing orientation. */
     public BlastPattern rotatedTo(Orientation orientation) {
         return orientation.isHorizontal() ? this : new BlastPattern(cols, rows);
     }
 
-    /** Total cells covered from the anchor. */
+    /** total cells covered from the anchor. */
     public int cellCount() {
         return rows * cols;
     }
 
-    /** The orientation this pattern was authored in (used by AI block scoring). */
+    /** the orientation this pattern was authored in (used by ai block scoring). */
     public Orientation naturalOrientation() {
         return rows <= cols ? Orientation.HORIZONTAL : Orientation.VERTICAL;
     }
 
     /**
-     * Coordinates covered when this pattern is already oriented.
+     * coordinates covered when this pattern is already oriented.
      */
     public List<Coordinate> coverage(Coordinate anchor) {
         List<Coordinate> cells = new ArrayList<>(cellCount());
@@ -59,8 +59,8 @@ public record BlastPattern(int rows, int cols) {
     }
 
     /**
-     * Every coordinate covered when the pattern is anchored at {@code anchor}.
-     * Cells outside the board are still returned — callers clip them, which keeps
+     * every coordinate covered when the pattern is anchored at {@code anchor}.
+     * cells outside the board are still returned — callers clip them, which keeps
      * the pattern itself independent of any particular battlefield size.
      */
     public List<Coordinate> coverage(Coordinate anchor, Orientation orientation) {
@@ -69,7 +69,7 @@ public record BlastPattern(int rows, int cols) {
 
 
     /**
-     * The anchor offset that keeps the whole pattern inside a board of the given size
+     * the anchor offset that keeps the whole pattern inside a board of the given size
      * when a player clicks near the right/bottom edge, or {@code null} when the
      * pattern simply cannot fit.
      */

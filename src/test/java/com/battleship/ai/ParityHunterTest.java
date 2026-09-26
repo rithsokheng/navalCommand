@@ -15,7 +15,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** Verifies the shared HUNT heuristic: parity preference, unshot-only picks, fallback. */
+/** verifies the shared hunt heuristic: parity preference, unshot-only picks, fallback. */
 class ParityHunterTest {
 
     @Test
@@ -33,7 +33,7 @@ class ParityHunterTest {
     @Test
     void fallsBackToAnyUnshotCellWhenNoEvenParityCellRemains() {
         TrackingGrid board = TrackingGrid.blind(3);
-        // Shell every even-parity cell; only odd-parity cells stay unshot.
+        // shell every even-parity cell; only odd-parity cells stay unshot.
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 if ((r + c) % 2 == 0) board.recordShotOutcome(new Coordinate(r, c), MarkerStatus.MISS);
@@ -57,7 +57,7 @@ class ParityHunterTest {
 
     @Test
     void respectsAmmoReadOnlyContractWhenUsedThroughHuntTargetAI() {
-        // Integration sanity: the refactored HuntTargetAI still plans legal shots.
+        // integration sanity: the refactored hunttargetai still plans legal shots.
         Player p = new HumanPlayer("AI", Theater.FLEET_ACTION);
         HuntTargetAI ai = new HuntTargetAI();
 

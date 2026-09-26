@@ -25,8 +25,8 @@ import javafx.scene.text.FontWeight;
 import java.security.SecureRandom;
 
 /**
- * Hosts a LAN match: opens a socket, shows a scannable QR code (and the raw
- * text) that encodes this machine's IP, port, and a short join code, then
+ * hosts a lan match: opens a socket, shows a scannable qr code (and the raw
+ * text) that encodes this machine's ip, port, and a short join code, then
  * waits for a friend on the same network to connect.
  */
 public class HostLobbyView {
@@ -46,7 +46,7 @@ public class HostLobbyView {
         this.theater = theater;
         this.code = String.format("%04d", RANDOM.nextInt(10000));
         this.port = NetUtil.findFreePort();
-        controller.setTheater(theater); // sets up selectedTheater so placement helpers work below
+        controller.setTheater(theater); // sets up selectedtheater so placement helpers work below
     }
 
     public StackPane build() {

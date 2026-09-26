@@ -21,7 +21,7 @@ class NetworkBattleMediatorTest {
         NetworkGameSession session = new NetworkGameSession(null, Theater.SKIRMISH, Role.CLIENT, me);
         NetworkBattleMediator mediator = new NetworkBattleMediator(session);
 
-        // Test miss
+        // test miss
         NetMessage.Fire missFire = new NetMessage.Fire(
                 com.battleship.model.weapon.WeaponCatalog.standardShell().id(),
                 new Coordinate(0, 0), Orientation.HORIZONTAL);
@@ -30,7 +30,7 @@ class NetworkBattleMediatorTest {
         assertFalse(missOutcome.anySunk());
         assertFalse(missOutcome.lost());
 
-        // Test hit 1
+        // test hit 1
         NetMessage.Fire hitFire1 = new NetMessage.Fire(
                 com.battleship.model.weapon.WeaponCatalog.standardShell().id(),
                 new Coordinate(1, 1), Orientation.HORIZONTAL);
@@ -39,14 +39,14 @@ class NetworkBattleMediatorTest {
         assertFalse(hitOutcome1.anySunk());
         assertFalse(hitOutcome1.lost());
 
-        // Test hit 2 and sunk (Patrol boat is size 2: (1,1) and (1,2))
+        // test hit 2 and sunk (patrol boat is size 2: (1,1) and (1,2))
         NetMessage.Fire hitFire2 = new NetMessage.Fire(
                 com.battleship.model.weapon.WeaponCatalog.standardShell().id(),
                 new Coordinate(1, 2), Orientation.HORIZONTAL);
         NetworkBattleMediator.IncomingFireOutcome hitOutcome2 = mediator.resolveAndReply(hitFire2);
         assertTrue(hitOutcome2.anyHit());
         assertTrue(hitOutcome2.anySunk());
-        assertTrue(hitOutcome2.lost()); // Only ship on board was sunk
+        assertTrue(hitOutcome2.lost()); // only ship on board was sunk
     }
 }
 

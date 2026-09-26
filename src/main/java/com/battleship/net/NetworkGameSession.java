@@ -5,14 +5,14 @@ import com.battleship.model.Theater;
 import com.battleship.model.fog.TrackingGrid;
 
 /**
- * Shared mutable state for one "Play With a Friend" match. Passed by reference
+ * shared mutable state for one "play with a friend" match. passed by reference
  * between the lobby, placement, and battle screens so they all see the same
  * connection, local player, and enemy knowledge.
  *
- * <p>The bespoke {@code EnemyTracker} is gone (Smell 5.2): a network admiral now
- * keeps their observations in the same {@link TrackingGrid} the local game and
- * the AI use, so there is one model of reality instead of two. Ammunition lives on
- * {@code me} (its {@code Arsenal}) — no need to duplicate it here.</p>
+ * <p>the bespoke {@code enemytracker} is gone (smell 5.2): a network admiral now
+ * keeps their observations in the same {@link trackinggrid} the local game and
+ * the ai use, so there is one model of reality instead of two. ammunition lives on
+ * {@code me} (its {@code arsenal}) — no need to duplicate it here.</p>
  */
 public class NetworkGameSession {
 
@@ -35,34 +35,34 @@ public class NetworkGameSession {
     public boolean isHost() { return role == Role.HOST; }
     public Player getMe() { return me; }
 
-    /** What this admiral knows about the enemy — never the enemy's real grid. */
+    /** what this admiral knows about the enemy — never the enemy's real grid. */
     public TrackingGrid getEnemyKnowledge() { return me.trackingGrid(); }
 
     public boolean isMyTurn() { return myTurn; }
 
-    /** Grants the local player the turn (after a START or an answered FIRE). */
+    /** grants the local player the turn (after a start or an answered fire). */
     public void beginMyTurn() { this.myTurn = true; }
 
-    /** Hands the turn to the remote opponent (after firing or when START says so). */
+    /** hands the turn to the remote opponent (after firing or when start says so). */
     public void beginOpponentTurn() { this.myTurn = false; }
 
-    /** Rich domain-action alias for {@link #beginMyTurn()}. */
+    /** rich domain-action alias for {@link #beginmyturn()}. */
     public void passTurnToMe() { beginMyTurn(); }
 
-    /** Rich domain-action alias for {@link #beginOpponentTurn()}. */
+    /** rich domain-action alias for {@link #beginopponentturn()}. */
     public void passTurnToOpponent() { beginOpponentTurn(); }
 
-    /** Checks whether the local player is currently allowed to fire/act. */
+    /** checks whether the local player is currently allowed to fire/act. */
     public boolean canAct() {
         return myTurn && !isGameOver();
     }
 
-    /** Returns true if either fleet has been completely destroyed. */
+    /** returns true if either fleet has been completely destroyed. */
     public boolean isGameOver() {
         return me.isFleetDestroyed() || getEnemyKnowledge().isFleetFullyAccountedFor();
     }
 
-    /** Applies the host's START decision: hostMovesFirst determines whose turn it is. */
+    /** applies the host's start decision: hostmovesfirst determines whose turn it is. */
     public void beginMatch(boolean hostMovesFirst) {
         this.myTurn = (isHost() == hostMovesFirst);
     }

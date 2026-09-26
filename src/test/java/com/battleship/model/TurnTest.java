@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-/** The Turn enum replaces the raw 0/1 turn index (P1). */
+/** the turn enum replaces the raw 0/1 turn index (p1). */
 class TurnTest {
 
     @Test

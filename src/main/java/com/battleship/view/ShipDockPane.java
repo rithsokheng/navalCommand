@@ -21,9 +21,9 @@ import javafx.scene.shape.Rectangle;
 import java.util.Map;
 
 /**
- * ISSUE 5: ship dock whose blocks visually rotate (tall vs wide) to match
+ * issue 5: ship dock whose blocks visually rotate (tall vs wide) to match
  * the current global orientation, and expose native drag-and-drop so
- * ShipPlaceView's board cells can accept them.
+ * shipplaceview's board cells can accept them.
  */
 public class ShipDockPane extends VBox {
 
@@ -75,7 +75,7 @@ public class ShipDockPane extends VBox {
         refresh();
     }
 
-    /** Rebuilds the dock contents from the controller's remaining-ship counts. */
+    /** rebuilds the dock contents from the controller's remaining-ship counts. */
     public void refresh() {
         getChildren().clear();
         Label header = new Label("SHIP DOCK");
@@ -116,7 +116,7 @@ public class ShipDockPane extends VBox {
         frame.setStrokeWidth(isSelected ? 2.2 : 1.3);
 
         if (sprite != null) {
-            // The whole hull rendered as one uncut image, so the ship reads as
+            // the whole hull rendered as one uncut image, so the ship reads as
             // a single vessel in the dock rather than a row of bordered tiles.
             ImageView iv = new ImageView(sprite);
             iv.setFitWidth(w);

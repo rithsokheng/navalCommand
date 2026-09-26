@@ -12,21 +12,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Encapsulates all ship-placement logic: fleet-remaining accounting, legality
- * checks, deployment/removal, and random auto-deployment. Extracted from
- * GameController so the controller can stay a thin mediator (SRP).
+ * encapsulates all ship-placement logic: fleet-remaining accounting, legality
+ * checks, deployment/removal, and random auto-deployment. extracted from
+ * gamecontroller so the controller can stay a thin mediator (srp).
  *
- * <p>Fixes Smell 5.1 (Law of Demeter): this service used to reach through the
+ * <p>fixes smell 5.1 (law of demeter): this service used to reach through the
  * player to grab a mutable board —
- * {@code player.getMutableBoard().placeShip(...)} — which is textbook
- * Feature Envy. It now operates exclusively on the {@link FleetDeployment}
+ * {@code player.getmutableboard().placeship(...)} — which is textbook
+ * feature envy. it now operates exclusively on the {@link fleetdeployment}
  * command interface, so it neither knows nor cares that players exist.</p>
  */
 public class PlacementService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    /** Ship types still needed, keyed by type, with remaining count. */
+    /** ship types still needed, keyed by type, with remaining count. */
     public Map<ShipType, Integer> getRemainingShipCounts(FleetDeployment deployment, Theater theater) {
         Map<ShipType, Integer> remaining = new LinkedHashMap<>(theater.getFleetComposition());
         for (ShipSnapshot ship : deployment.fleet()) {
@@ -36,7 +36,7 @@ public class PlacementService {
         return remaining;
     }
 
-    /** Deploys a ship only if the fleet composition still allows it and the grid does too. */
+    /** deploys a ship only if the fleet composition still allows it and the grid does too. */
     public boolean deploy(FleetDeployment deployment, Theater theater,
                           ShipType type, Coordinate start, Orientation orientation) {
         Map<ShipType, Integer> remaining = getRemainingShipCounts(deployment, theater);
@@ -44,12 +44,12 @@ public class PlacementService {
         return deployment.deploy(type, start, orientation);
     }
 
-    /** Validates a deployment without mutating state. */
+    /** validates a deployment without mutating state. */
     public boolean canDeploy(FleetDeployment deployment, ShipType type, Coordinate start, Orientation orientation) {
         return deployment.canDeploy(type, start, orientation);
     }
 
-    /** Pulls an already-deployed hull at the given coordinate back into the dock. */
+    /** pulls an already-deployed hull at the given coordinate back into the dock. */
     public boolean undeployAt(FleetDeployment deployment, Coordinate c) {
         return deployment.undeployAt(c);
     }
@@ -62,7 +62,7 @@ public class PlacementService {
         deployment.clearDeployment();
     }
 
-    /** Randomly deploys all remaining ships (spec 4.2, retry until success). */
+    /** randomly deploys all remaining ships (spec 4.2, retry until success). */
     public void autoDeployAll(FleetDeployment deployment, Theater theater) {
         Map<ShipType, Integer> remaining = getRemainingShipCounts(deployment, theater);
         int size = theater.getBoardSize();

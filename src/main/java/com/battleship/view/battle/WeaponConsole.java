@@ -14,12 +14,12 @@ import javafx.scene.layout.HBox;
 import java.util.function.Consumer;
 
 /**
- * The weapon console: one button per registered {@link Weapon}, plus its
+ * the weapon console: one button per registered {@link weapon}, plus its
  * ammunition readout.
  *
- * <p>Extracted from the battle template method (V2.1) and rebuilt on the
- * {@link WeaponCatalog} (V3.1): the console iterates whatever the catalog knows,
- * so a plugin weapon shows up automatically. It reads ammunition through the
+ * <p>extracted from the battle template method (v2.1) and rebuilt on the
+ * {@link weaponcatalog} (v3.1): the console iterates whatever the catalog knows,
+ * so a plugin weapon shows up automatically. it reads ammunition through the
  * player's read-only delegates and never mutates anything itself.</p>
  */
 public final class WeaponConsole {
@@ -30,18 +30,18 @@ public final class WeaponConsole {
         bar.setAlignment(Pos.CENTER);
     }
 
-    /** The weapon bar node to drop into a layout. */
+    /** the weapon bar node to drop into a layout. */
     public HBox node() {
         return bar;
     }
 
     /**
-     * Rebuilds the buttons for the given player.
+     * rebuilds the buttons for the given player.
      *
      * @param player     whose magazine is displayed
-     * @param boardSize  battlefield size (weapons may be unavailable on small boards)
-     * @param turnAllows whether the local admiral may act right now
-     * @param onSelect   invoked when an enabled button is pressed
+     * @param boardsize  battlefield size (weapons may be unavailable on small boards)
+     * @param turnallows whether the local admiral may act right now
+     * @param onselect   invoked when an enabled button is pressed
      */
     public void refresh(Player player, int boardSize, boolean turnAllows, Consumer<Weapon> onSelect) {
         bar.getChildren().clear();

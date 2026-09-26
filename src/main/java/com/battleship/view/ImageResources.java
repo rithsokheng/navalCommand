@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Central place to load and cache the game's bundled art (ship hulls, weapon
- * icons, hit/miss effects, menu decorations). Every lookup is classpath-based
+ * central place to load and cache the game's bundled art (ship hulls, weapon
+ * icons, hit/miss effects, menu decorations). every lookup is classpath-based
  * ("/images/..."), cached after first use, and returns {@code null} instead of
  * throwing if an asset is missing so callers can gracefully fall back to the
  * plain color rendering that predates this class.
@@ -37,8 +37,8 @@ public final class ImageResources {
     }
 
     /**
-     * Hull art for a ship type/orientation. PATROL_BOAT has no bespoke art
-     * (it's a 2-length ship, like DESTROYER) so it borrows the destroyer sprite.
+     * hull art for a ship type/orientation. patrol_boat has no bespoke art
+     * (it's a 2-length ship, like destroyer) so it borrows the destroyer sprite.
      */
     public static Image ship(ShipType type, Orientation orientation) {
         String name = type.getAssetName();
@@ -48,7 +48,7 @@ public final class ImageResources {
 
 
     /**
-     * Icon for a weapon, keyed by its stable id. Weapons have no bundled art by
+     * icon for a weapon, keyed by its stable id. weapons have no bundled art by
      * default (a plugin weapon simply gets no icon), so the mapping is data, not
      * behavior — adding a weapon to the game never requires touching this class.
      */
@@ -63,12 +63,12 @@ public final class ImageResources {
         return name == null ? null : load("/images/ui/" + name + ".png");
     }
 
-    /** Hit/miss/fire effect art. Pass just the base name, e.g. "hit-explosion", "miss-splash", "fire-1". */
+    /** hit/miss/fire effect art. pass just the base name, e.g. "hit-explosion", "miss-splash", "fire-1". */
     public static Image effect(String baseName) {
         return load("/images/effects/" + baseName + ".png");
     }
 
-    /** Menu/chrome art. Pass just the base name, e.g. "logo-battleship", "wave-line", "compass-rose", "icon-anchor". */
+    /** menu/chrome art. pass just the base name, e.g. "logo-battleship", "wave-line", "compass-rose", "icon-anchor". */
     public static Image ui(String baseName) {
         return load("/images/ui/" + baseName + ".png");
     }

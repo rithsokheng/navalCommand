@@ -21,15 +21,15 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 
 /**
- * A themed "mysterious box" pop-up that must be answered correctly before a
- * Nuclear launcher shot is allowed to fire. Blocks (via showAndWait) until the
+ * a themed "mysterious box" pop-up that must be answered correctly before a
+ * nuclear launcher shot is allowed to fire. blocks (via showandwait) until the
  * player picks an option, then reports whether the answer was correct.
  */
 public final class NuclearLaunchDialog {
 
     private NuclearLaunchDialog() { }
 
-    /** Shows the dialog modally and returns true only if the player answered correctly. */
+    /** shows the dialog modally and returns true only if the player answered correctly. */
     public static boolean askAndAwaitAuthorization(Window owner) {
         QuizQuestion question = QuizBank.random();
         boolean[] correct = {false};

@@ -22,10 +22,10 @@ import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 /**
- * Game over screen for a network match. Unlike the local GameOverView, we
+ * game over screen for a network match. unlike the local gameoverview, we
  * never learned the opponent's real ship layout — so their board only shows
- * the cells revealed by our own shots (identical to what TrackingGrid knows).
- * Styled to match GameOverView: full-bleed sea backdrop tinted for win/loss,
+ * the cells revealed by our own shots (identical to what trackinggrid knows).
+ * styled to match gameoverview: full-bleed sea backdrop tinted for win/loss,
  * board-card framed reveal boards.
  */
 public class NetworkGameOverView {

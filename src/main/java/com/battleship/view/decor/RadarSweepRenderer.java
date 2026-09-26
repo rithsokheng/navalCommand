@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A small "Fleet Command"-style radar sweep: concentric rings, crosshairs, a
+ * a small "fleet command"-style radar sweep: concentric rings, crosshairs, a
  * rotating cyan sweep wedge, and gold blips that flare as the sweep passes
- * over them. One visual effect, one class (SRP — extracted from the former
- * DecorUtil God object).
+ * over them. one visual effect, one class (srp — extracted from the former
+ * decorutil god object).
  */
 public final class RadarSweepRenderer {
 
     private RadarSweepRenderer() { }
 
     /**
-     * Builds the radar sweep as a non-interactive square StackPane of the
+     * builds the radar sweep as a non-interactive square stackpane of the
      * given pixel size, meant to sit inside a side-panel card.
      */
     public static StackPane animatedRadarSweep(double size) {

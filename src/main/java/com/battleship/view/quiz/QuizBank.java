@@ -4,8 +4,8 @@ import java.security.SecureRandom;
 import java.util.List;
 
 /**
- * Fixed bank of Khmer-history trivia questions used to gate the Nuclear
- * launcher. This is flavor text for a board game weapon — not real launch
+ * fixed bank of khmer-history trivia questions used to gate the nuclear
+ * launcher. this is flavor text for a board game weapon — not real launch
  * authorization — so questions are deliberately quick to answer.
  */
 public final class QuizBank {

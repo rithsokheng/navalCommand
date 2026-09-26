@@ -38,13 +38,13 @@ class BattlePerspectiveTest {
 
         BattlePerspective perspective = new AlternatingPerspective(current::get, opponent::get);
 
-        // Initially player 1
+        // initially player 1
         assertEquals("Admiral 1", perspective.perspectiveName());
         assertSame(player1, perspective.perspectiveFleet());
         assertEquals("Admiral 2", perspective.opponentName());
         assertSame(player1.trackingGrid(), perspective.opponentKnowledge());
 
-        // Swap turn to player 2
+        // swap turn to player 2
         current.set(player2);
         opponent.set(player1);
 

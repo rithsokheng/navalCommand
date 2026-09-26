@@ -7,7 +7,7 @@ import com.battleship.model.fog.TrackingGrid;
 import java.security.SecureRandom;
 import java.util.List;
 
-/** Ensign (Easy) difficulty: uniform random selection over unshot cells. */
+/** ensign (easy) difficulty: uniform random selection over unshot cells. */
 public class RandomAI implements AIStrategy {
 
     private final SecureRandom random = new SecureRandom();
@@ -20,6 +20,6 @@ public class RandomAI implements AIStrategy {
 
     @Override
     public void notifyResult(ShotResult result) {
-        // No state to update.
+        // no state to update.
     }
 }

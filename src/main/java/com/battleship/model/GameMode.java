@@ -1,6 +1,6 @@
 package com.battleship.model;
 
-/** Selected game mode from GameModeSelectView. */
+/** selected game mode from gamemodeselectview. */
 public enum GameMode {
     AI_EASY("vs AI - Easy"),
     AI_NORMAL("vs AI - Normal"),

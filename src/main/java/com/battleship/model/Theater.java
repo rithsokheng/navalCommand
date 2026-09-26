@@ -3,8 +3,8 @@ package com.battleship.model;
 import java.util.Map;
 
 /**
- * The three playable board configurations: Skirmish (5x5), Engagement (8x8),
- * Fleet Action (10x10). Each defines board size and required fleet composition.
+ * the three playable board configurations: skirmish (5x5), engagement (8x8),
+ * fleet action (10x10). each defines board size and required fleet composition.
  */
 public enum Theater {
 
@@ -36,12 +36,12 @@ public enum Theater {
     public int getBoardSize() { return boardSize; }
     public Map<ShipType, Integer> getFleetComposition() { return fleetComposition; }
 
-    /** Total number of individual ship instances in the fleet. */
+    /** total number of individual ship instances in the fleet. */
     public int getTotalShipCount() {
         return fleetComposition.values().stream().mapToInt(Integer::intValue).sum();
     }
 
-    /** Total hits required across the whole fleet to achieve victory. */
+    /** total hits required across the whole fleet to achieve victory. */
     public int getTotalHitsToWin() {
         return fleetComposition.entrySet().stream()
                 .mapToInt(e -> e.getKey().getSize() * e.getValue())
