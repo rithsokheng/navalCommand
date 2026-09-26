@@ -52,7 +52,9 @@ public class JoinLobbyView {
         TextField inviteField = new TextField();
         inviteField.setPromptText("BATTLESHIP:192.168.1.23:55123:4821");
         inviteField.setPrefWidth(360);
+        inviteField.setMaxWidth(360);
         inviteField.getStyleClass().add("dark-field");
+        inviteField.setOnAction(e -> attemptConnect(inviteField.getText().trim()));
 
         status = new Label("");
         status.getStyleClass().add("accent-text");
@@ -71,6 +73,7 @@ public class JoinLobbyView {
 
         VBox layout = new VBox(14, title, hint, inviteField, connect, status, back);
         layout.setAlignment(Pos.CENTER);
+        layout.setFillWidth(false);
         layout.setPadding(new Insets(24));
         VBox.setMargin(back, new Insets(10, 0, 0, 0));
 
@@ -78,18 +81,41 @@ public class JoinLobbyView {
     }
 
     private void attemptConnect(String invite) {
-        String[] parts = invite.split(":");
-        if (parts.length != 4 || !"BATTLESHIP".equalsIgnoreCase(parts[0])) {
-            showError("That doesn't look like a valid invite code. Expected format:\nBATTLESHIP:<ip>:<port>:<code>");
+        if (invite == null || invite.isBlank()) {
+            showError("Please enter an invite code (e.g. BATTLESHIP:192.168.1.23:55123:4821 or 192.168.1.23:55123:4821).");
             return;
         }
-        String ip = parts[1];
-        String code = parts[3];
+        String cleaned = invite.trim();
+        String[] parts = cleaned.split("[:\\s]+");
+        String ip;
         int port;
-        try {
-            port = Integer.parseInt(parts[2]);
-        } catch (NumberFormatException ex) {
-            showError("Invalid port in invite code.");
+        String code;
+
+        if (parts.length >= 4 && "BATTLESHIP".equalsIgnoreCase(parts[0])) {
+            ip = parts[1].trim();
+            try {
+                port = Integer.parseInt(parts[2].trim());
+            } catch (NumberFormatException ex) {
+                showError("Invalid port in invite code: " + parts[2]);
+                return;
+            }
+            code = parts[3].trim();
+        } else if (parts.length >= 3) {
+            ip = parts[0].trim();
+            try {
+                port = Integer.parseInt(parts[1].trim());
+            } catch (NumberFormatException ex) {
+                showError("Invalid port in invite code: " + parts[1]);
+                return;
+            }
+            code = parts[2].trim();
+        } else {
+            showError("That doesn't look like a valid invite code. Expected format:\nBATTLESHIP:<ip>:<port>:<code> or <ip>:<port>:<code>");
+            return;
+        }
+
+        if (port < 1 || port > 65535) {
+            showError("Port number must be between 1 and 65535.");
             return;
         }
 
@@ -100,7 +126,10 @@ public class JoinLobbyView {
                     session.setOnMessage(msg -> handleWelcome(session, msg));
                     session.send(new NetMessage.Hello(code));
                 },
-                error -> showError("Couldn't connect: " + error.getMessage()),
+                error -> {
+                    String msg = error.getMessage() != null ? error.getMessage() : error.getClass().getSimpleName();
+                    showError("Couldn't connect: " + msg);
+                },
                 Platform::runLater);
     }
 
