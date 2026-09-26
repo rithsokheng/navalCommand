@@ -4,6 +4,7 @@ import com.battleship.controller.GameController;
 import com.battleship.model.CellStatus;
 import com.battleship.model.Coordinate;
 import com.battleship.model.FleetReadout;
+import com.battleship.model.GameMode;
 import com.battleship.model.MatchStatistics;
 import com.battleship.model.Player;
 
@@ -42,22 +43,35 @@ public class GameOverView {
     }
 
     public StackPane build() {
-        boolean playerWon = controller.isFirstPlayer(winner);
+        boolean isHotseat = controller.getSelectedMode() == GameMode.HOTSEAT;
+        boolean playerWon = isHotseat || controller.isFirstPlayer(winner);
         nav.getAudio().playGameOver(playerWon);
 
-        Label banner = new Label(playerWon ? "\uD83C\uDFC6  VICTORY" : "\u2620  DEFEAT");
-        banner.setFont(Font.font("Arial Black", FontWeight.BOLD, 52));
+        String bannerText;
+        String subtitleText;
+        if (isHotseat) {
+            bannerText = "\uD83C\uDFC6  " + winner.getName().toUpperCase() + " WINS!";
+            subtitleText = "\u2693  THE OPPOSING FLEET HAS BEEN SENT TO THE BOTTOM  \u2693";
+        } else if (playerWon) {
+            bannerText = "\uD83C\uDFC6  VICTORY";
+            subtitleText = "\u2693  THE ENEMY FLEET HAS BEEN DESTROYED  \u2693";
+        } else {
+            bannerText = "\u2620  DEFEAT";
+            subtitleText = "\u2693  YOUR FLEET HAS BEEN LOST  \u2693";
+        }
+
+        Label banner = new Label(bannerText);
+        banner.setFont(Font.font("Arial Black", FontWeight.BOLD, isHotseat ? 44 : 52));
         banner.getStyleClass().add(playerWon ? "app-title" : "defeat-banner");
 
-        Label subtitle = new Label(playerWon
-                ? "\u2693  THE ENEMY FLEET HAS BEEN DESTROYED  \u2693"
-                : "\u2693  YOUR FLEET HAS BEEN LOST  \u2693");
+        Label subtitle = new Label(subtitleText);
         subtitle.setFont(Font.font("Arial", FontWeight.SEMI_BOLD, 13));
         subtitle.getStyleClass().add("app-subtitle");
 
-        VBox ownBoard = revealedBoardCard("YOUR FLEET", controller.getPlayerFleet(1));
-        VBox enemyBoard = revealedBoardCard(
-                controller.getPlayerName(2).toUpperCase() + "'S FLEET", controller.getPlayerFleet(2));
+        String p1Label = isHotseat ? controller.getPlayerName(1).toUpperCase() + "'S FLEET" : "YOUR FLEET";
+        String p2Label = controller.getPlayerName(2).toUpperCase() + "'S FLEET";
+        VBox ownBoard = revealedBoardCard(p1Label, controller.getPlayerFleet(1));
+        VBox enemyBoard = revealedBoardCard(p2Label, controller.getPlayerFleet(2));
 
         HBox boards = new HBox(28, ownBoard, enemyBoard);
         boards.setAlignment(Pos.CENTER);
@@ -84,6 +98,7 @@ public class GameOverView {
 
         VBox layout = new VBox(22, titleBlock, boards, stats, buttons);
         layout.setAlignment(Pos.CENTER);
+        layout.setFillWidth(false);
         layout.setPadding(new Insets(28, 24, 28, 24));
 
         StackPane root = new StackPane();
@@ -136,6 +151,8 @@ public class GameOverView {
         VBox card = new VBox(14, title, grid);
         card.getStyleClass().add("board-card");
         card.setAlignment(Pos.CENTER);
+        card.setMaxWidth(Region.USE_PREF_SIZE);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
         return card;
     }
 
@@ -157,6 +174,7 @@ public class GameOverView {
         row.getStyleClass().add("side-card");
         row.setAlignment(Pos.CENTER);
         row.setPadding(new Insets(16, 26, 16, 26));
+        row.setMaxWidth(Region.USE_PREF_SIZE);
         return row;
     }
 
