@@ -69,6 +69,7 @@ public class NetworkGameOverView {
 
         VBox layout = new VBox(22, titleBlock, boards, returnToPort);
         layout.setAlignment(Pos.CENTER);
+        layout.setFillWidth(false);
         layout.setPadding(new Insets(28, 24, 28, 24));
 
         StackPane root = new StackPane();
@@ -116,6 +117,8 @@ public class NetworkGameOverView {
         VBox card = new VBox(14, title, grid);
         card.getStyleClass().add("board-card");
         card.setAlignment(Pos.CENTER);
+        card.setMaxWidth(Region.USE_PREF_SIZE);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
         return card;
     }
 
@@ -141,6 +144,8 @@ public class NetworkGameOverView {
         VBox card = new VBox(14, title, grid);
         card.getStyleClass().add("board-card");
         card.setAlignment(Pos.CENTER);
+        card.setMaxWidth(Region.USE_PREF_SIZE);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
         return card;
     }
 }
