@@ -10,13 +10,15 @@ A modern Java 21 + JavaFX naval warfare game built with strict object-oriented d
 - **Single Player (vs AI):** Battle against three distinct AI difficulty tiers (Ensign, Lieutenant, Admiral).
 - **Pass & Play (Hotseat):** Local two-player mode with a private handoff pass screen (`PassScreen`) between turns to maintain fleet secrecy.
 - **LAN Multiplayer ("Play with a Friend"):** Direct peer-to-peer TCP socket connection across local networks:
-  - Scannable QR code (via ZXing) or shareable join string (`BATTLESHIP:<ip>:<port>:<code>`).
+  - Scannable QR code (via ZXing) or shareable join string (`BATTLESHIP:<ip>:<port>:<code>` or `<ip>:<port>:<code>`).
+  - Resilient lobby join: Flexible input parsing (with or without protocol prefix, whitespace-tolerant), port range validation (1–65535), and `Enter` key shortcut submission.
   - Strict Fog-of-War: Real ship placements are never transmitted over the wire; each client is authoritative only over its own board and reports shot outcomes (`MISS`, `HIT`, `SUNK`).
+  - Robust session lifecycle: Graceful disconnect detection, state-aware modal cleanup preventing false disconnect warnings upon normal game completion, and synchronized network firing audio.
 
 ### Battlefields & Theaters
-- **Quick Match (5×5):** Fast skirmish with Patrol Boat (2) and Submarine (3). Total 7 hits to win.
-- **Standard (8×8):** Tactical engagement with Destroyer (2), Submarine (2), and Battleship (1). Total 14 hits to win.
-- **Classic (10×10):** Full fleet action with Destroyer (2), Submarine (2), Cruiser (1), Battleship (1), and Aircraft Carrier (1). Total 19 hits to win.
+- **Quick Match (5×5):** Fast skirmish with 2× Patrol Boat (size 2) and 1× Submarine (size 3) — 3 ships total. Total 7 hits to win.
+- **Standard (8×8):** Tactical engagement with 2× Destroyer (size 2), 2× Submarine (size 3), and 1× Battleship (size 4) — 5 ships total. Total 14 hits to win.
+- **Classic (10×10):** Full fleet action with 2× Destroyer (size 2), 2× Submarine (size 3), 1× Cruiser (size 3), 1× Battleship (size 4), and 1× Aircraft Carrier (size 5) — 7 ships total. Total 22 hits to win.
 
 ### Advanced Weaponry & Arsenal System
 - **Standard Shell:** Precise 1×1 shot with infinite ammo.
@@ -85,7 +87,6 @@ com.battleship
 ├── ai              # AI strategy implementations (pure Java domain logic)
 │   ├── AIFactory.java         # Strategy factory with null-safe mode resolution
 │   ├── AIStrategy.java        # Strategy interface
-│   ├── AiShotPlan.java        # Weapon, anchor, and orientation plan record
 │   ├── Difficulty.java        # Difficulty enum (Ensign, Lieutenant, Admiral)
 │   ├── HuntTargetAI.java      # Normal difficulty: parity hunt + target state machine
 │   ├── ParityHunter.java      # Shared stateless checkerboard parity hunt component
@@ -117,12 +118,14 @@ com.battleship
 │   └── SaveGameService.java   # File storage service
 │
 └── view            # JavaFX presentation layer
+    ├── Launcher.java          # Fat JAR bootstrap entry point bypassing JavaFX module restrictions
     ├── MainApp.java           # JavaFX Application entry point
     ├── ScreenNavigator.java   # Focused screen routing role interface (ISP)
     ├── ViewNavigator.java     # Composite navigator interface (ScreenNavigator, AudioProvider, WindowProvider)
     ├── AudioProvider.java     # Audio accessor interface
     ├── WindowProvider.java    # Stage accessor interface
     ├── MainMenuView.java      # Title screen with centered navigation
+    ├── MenuOverlays.java      # In-game modal overlay sheets (Settings and Tactical Manual)
     ├── GameModeSelectView.java# Mode selector with card-wide click handlers
     ├── BoardSelectView.java   # Theater selector with interactive preview cards
     ├── AbstractShipPlaceView.java # Shared deployment logic and UI
@@ -147,6 +150,7 @@ com.battleship
     ├── SoundManager.java      # BGM and SFX player (GameAudio implementation)
     ├── SoundGenerator.java    # Procedural audio synthesizer fallback
     ├── DecorUtil.java         # Facade over the canvas decor renderers
+    ├── AlertUtil.java         # Reusable modal dialog utilities (confirmation, alerts, disconnects)
     ├── CssClasses.java        # Centralized CSS style class constants
     ├── ImageResources.java    # Asset cache
     ├── QrCodeUtil.java        # ZXing QR code generator
@@ -214,14 +218,14 @@ java -jar target/naval-command-1.0.0.jar
 mvn test
 ```
 
-The test suite (JUnit 5) runs headlessly — **no JavaFX runtime or display required** — comprising **45 tests across 16 test suites**:
+The test suite (JUnit 5) runs headlessly — **no JavaFX runtime or display required** — comprising **54 tests across 18 test suites**:
 - **AI Strategies:** `ParityHunterTest`
 - **Combat & Resolution:** `BattleServiceTest`, `ShotResolverTest`
 - **Combat Viewport Strategies:** `BattlePerspectiveTest`
 - **Controller & DIP:** `GameControllerDIPTest` (hotseat lifecycle, online mode, DI seams)
 - **Domain Models:** `TurnTest`, `MatchStatisticsTest`
 - **Weapons & Polymorphism:** `BlastPatternRotationTest`, `WeaponPolymorphismTest`
-- **Networking:** `NetworkGameSessionTest`, `NetworkBattleMediatorTest`
+- **Networking:** `NetMessageCodecTest`, `NetworkGameSessionTest`, `NetworkBattleMediatorTest`, `NetworkSessionIntegrationTest`
 - **Persistence:** `GameSaveMapperTest`, `SaveGameServiceTest`, `SaveGameIntegrationTest`
 - **Audio & Navigation Abstractions:** `InterfaceSegregationTest`, `SilentAudioTest`
 
@@ -230,10 +234,10 @@ The test suite (JUnit 5) runs headlessly — **no JavaFX runtime or display requ
 ## Key OOP Principles Implemented
 
 - **Strategy Pattern & Open/Closed Principle (OCP):**
-  - Viewport perspective in [`LocalBattleView`](file:///home/debrouillez-vous/Downloads/Projects/vB/battleshipGameOOP/src/main/java/com/battleship/view/LocalBattleView.java) is abstracted via [`BattlePerspective`](file:///home/debrouillez-vous/Downloads/Projects/vB/battleshipGameOOP/src/main/java/com/battleship/view/battle/BattlePerspective.java) with [`FixedPerspective`](file:///home/debrouillez-vous/Downloads/Projects/vB/battleshipGameOOP/src/main/java/com/battleship/view/battle/FixedPerspective.java) for vs-AI and [`AlternatingPerspective`](file:///home/debrouillez-vous/Downloads/Projects/vB/battleshipGameOOP/src/main/java/com/battleship/view/battle/AlternatingPerspective.java) for Hotseat, eliminating procedural conditionals in the view layer.
+  - Viewport perspective in [`LocalBattleView`](src/main/java/com/battleship/view/LocalBattleView.java) is abstracted via [`BattlePerspective`](src/main/java/com/battleship/view/battle/BattlePerspective.java) with [`FixedPerspective`](src/main/java/com/battleship/view/battle/FixedPerspective.java) for vs-AI and [`AlternatingPerspective`](src/main/java/com/battleship/view/battle/AlternatingPerspective.java) for Hotseat, eliminating procedural conditionals in the view layer.
 - **Interface Segregation Principle (ISP):**
-  - Screen routing is isolated into [`ScreenNavigator`](file:///home/debrouillez-vous/Downloads/Projects/vB/battleshipGameOOP/src/main/java/com/battleship/view/ScreenNavigator.java), allowing screens to depend only on navigation without coupling to audio or stage providers.
-  - [`Player`](file:///home/debrouillez-vous/Downloads/Projects/vB/battleshipGameOOP/src/main/java/com/battleship/model/Player.java) directly exposes focused component accessors (`primaryGrid()`, `ammoReadout()`), eliminating the Middle Man code smell.
+  - Screen routing is isolated into [`ScreenNavigator`](src/main/java/com/battleship/view/ScreenNavigator.java), allowing screens to depend only on navigation without coupling to audio or stage providers.
+  - [`Player`](src/main/java/com/battleship/model/Player.java) directly exposes focused component accessors (`primaryGrid()`, `ammoReadout()`), eliminating the Middle Man code smell.
 - **Polymorphism over Conditionals (OCP / LSP):**
   - The `Weapon` hierarchy (`StandardShell`, `SalvoBarrage`, `NuclearWarhead`) encapsulates blast pattern generation, ammo constraints, launch authorization protocol (`requiresAuthorization()`), and audio dispatch (`playFiringSound(...)`), eliminating `instanceof` checks and switch statements.
 - **Strict Fog-of-War Encapsulation:**
