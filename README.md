@@ -7,22 +7,22 @@ A modern Java 21 + JavaFX naval warfare game built with strict object-oriented d
 ## Features
 
 ### Game Modes
-- **Single Player (vs AI):** Battle against three distinct AI difficulty tiers (Ensign, Lieutenant, Admiral).
+- **Single Player (vs AI):** Battle against three distinct AI difficulty tiers: Easy (Ensign), Normal (Lieutenant), and Hard (Admiral).
 - **Pass & Play (Hotseat):** Local two-player mode with a private handoff pass screen (`PassScreen`) between turns to maintain fleet secrecy.
 - **LAN Multiplayer ("Play with a Friend"):** Direct peer-to-peer TCP socket connection across local networks:
   - Scannable QR code (via ZXing) or shareable join string (`BATTLESHIP:<ip>:<port>:<code>` or `<ip>:<port>:<code>`).
-  - Resilient lobby join: Flexible input parsing (with or without protocol prefix, whitespace-tolerant), port range validation (1–65535), and `Enter` key shortcut submission.
+  - Resilient lobby join: Flexible input parsing (with or without protocol prefix, whitespace-tolerant), port range validation (1-65535), and `Enter` key shortcut submission.
   - Strict Fog-of-War: Real ship placements are never transmitted over the wire; each client is authoritative only over its own board and reports shot outcomes (`MISS`, `HIT`, `SUNK`).
   - Robust session lifecycle: Graceful disconnect detection, state-aware modal cleanup preventing false disconnect warnings upon normal game completion, and synchronized network firing audio.
 
 ### Battlefields & Theaters
-- **Quick Match (5×5):** Fast skirmish with 2× Patrol Boat (size 2) and 1× Submarine (size 3) — 3 ships total. Total 7 hits to win.
-- **Standard (8×8):** Tactical engagement with 2× Destroyer (size 2), 2× Submarine (size 3), and 1× Battleship (size 4) — 5 ships total. Total 14 hits to win.
-- **Classic (10×10):** Full fleet action with 2× Destroyer (size 2), 2× Submarine (size 3), 1× Cruiser (size 3), 1× Battleship (size 4), and 1× Aircraft Carrier (size 5) — 7 ships total. Total 22 hits to win.
+- **Quick Match (5×5):** Fast skirmish with 2× Patrol Boat (size 2) and 1× Submarine (size 3) - 3 ships total. Total 7 hits to win.
+- **Standard (8×8):** Tactical engagement with 2× Destroyer (size 2), 2× Submarine (size 3), and 1× Battleship (size 4) - 5 ships total. Total 14 hits to win.
+- **Classic (10×10):** Full fleet action with 2× Destroyer (size 2), 2× Submarine (size 3), 1× Cruiser (size 3), 1× Battleship (size 4), and 1× Carrier (size 5) - 7 ships total. Total 22 hits to win.
 
 ### Advanced Weaponry & Arsenal System
 - **Standard Shell:** Precise 1×1 shot with infinite ammo.
-- **Salvo Barrage:** 1×3 line barrage available on larger grids (8×8 and 10×10).
+- **Salvo Barrage ("Level 2"):** 1×3 line barrage available on larger grids (8×8 and 10×10).
 - **Tactical Nuclear Warhead:** 2×3 area devastation available across all theaters.
   - **Launch Code Protocol:** Firing requires answering naval trivia questions to authorize detonation.
   - **Auto-Resupply:** Initiates a resupply drill to restock warheads after usage.
@@ -79,7 +79,7 @@ com.battleship
 │   └── weapon/                # Polymorphic weapon hierarchy (OCP / LSP)
 │       ├── BlastPattern.java  # Area-of-effect offsets with orientation rotation
 │       ├── NuclearWarhead.java# 2×3 blast weapon with authorization & trivia gating
-│       ├── SalvoBarrage.java  # 1×3 line barrage weapon
+│       ├── SalvoBarrage.java  # 1×3 line barrage weapon ("Level 2" in UI)
 │       ├── StandardShell.java # Standard 1×1 single shell weapon
 │       ├── Weapon.java        # Core weapon abstraction (sound, authorization, blast)
 │       └── WeaponCatalog.java # Preconfigured weapon instances
@@ -100,7 +100,7 @@ com.battleship
 │   ├── LauncherFireResult.java# Multi-cell shot result and sunk ship container
 │   ├── NetworkFireService.java# Domain mutations of a network shot (ammo, resupply)
 │   ├── PlacementService.java  # Fleet placement legality & auto-deployment
-│   ├── ShotResolution.java    # Resolved multi-cell shot outcome record
+│   ├── ShotResolution.java    # Functional strategy interface for resolving shots (DIP)
 │   └── ShotResolver.java      # Applies launcher blast patterns to target grids
 │
 ├── net             # LAN multiplayer networking (TCP sockets)
@@ -209,7 +209,13 @@ mvn javafx:run
 
 ```bash
 mvn clean package
-java -jar target/naval-command-1.0.0.jar
+
+# Run the shaded executable fat JAR (Linux / macOS):
+java -jar target/naval-command-1.0.0-shaded.jar
+
+# Or on Windows (when packaged with the build-windows profile):
+# mvn clean package -Pbuild-windows
+# java -jar target/naval-command-1.0.0-windows.jar
 ```
 
 ### Run Tests
@@ -218,7 +224,7 @@ java -jar target/naval-command-1.0.0.jar
 mvn test
 ```
 
-The test suite (JUnit 5) runs headlessly — **no JavaFX runtime or display required** — comprising **54 tests across 18 test suites**:
+The test suite (JUnit 5) runs headlessly - **no JavaFX runtime or display required** - comprising **54 tests across 18 test suites**:
 - **AI Strategies:** `ParityHunterTest`
 - **Combat & Resolution:** `BattleServiceTest`, `ShotResolverTest`
 - **Combat Viewport Strategies:** `BattlePerspectiveTest`
